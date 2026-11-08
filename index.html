@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en" data-build="news-20261108-1617">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Breaking News Camera — Totally Real News</title>
+<meta name="theme-color" content="#0b1020">
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin:0; padding:0; height:100%; background:#0b1020; color:#fff; font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; overflow:hidden; }
+  #stage { position:fixed; inset:0; background:#000; }
+  #vid { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; background:#111; }
+  .hidden { display:none !important; }
+
+  /* ===== Start screen ===== */
+  #start { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; padding:24px; text-align:center; background:radial-gradient(120% 100% at 50% 0%, #23356b 0%, #0b1020 60%); z-index:30; }
+  #start .globe { font-size:64px; animation:spin 14s linear infinite; display:inline-block; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  #start h1 { margin:0; font-size:30px; font-weight:900; letter-spacing:.5px; line-height:1.1; }
+  #start h1 .red { color:#ff3b30; }
+  #start p { margin:0; color:#b9c4e4; font-size:15px; max-width:420px; line-height:1.45; }
+  #goLive { margin-top:6px; background:#e01f26; color:#fff; border:none; border-radius:999px; padding:18px 42px; font-size:21px; font-weight:900; letter-spacing:1px; cursor:pointer; box-shadow:0 10px 30px rgba(224,31,38,.45); animation:pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.05); } }
+  #goLive:active { transform:scale(.97); }
+  .langrow { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; max-width:480px; }
+  .langbtn { background:#1a2450; color:#dbe4ff; border:1.5px solid #33448a; border-radius:999px; padding:9px 14px; font-size:14.5px; font-weight:700; cursor:pointer; }
+  .langbtn.on { background:#ffd60a; color:#141414; border-color:#ffd60a; }
+  .lbl { font-size:12.5px; font-weight:800; letter-spacing:2px; color:#8fa3d9; text-transform:uppercase; }
+
+  /* ===== Intro sting ===== */
+  #intro { position:absolute; inset:0; z-index:40; background:#05070f; overflow:hidden; display:flex; align-items:center; justify-content:center; }
+  #intro .bars { position:absolute; inset:0; }
+  #intro .bar { position:absolute; left:-20%; width:140%; height:16%; transform:skewY(-6deg); opacity:0; }
+  #intro .b1 { top:6%; background:#e01f26; animation:sweep .5s .05s ease-out forwards; }
+  #intro .b2 { top:26%; background:#f5f7ff; animation:sweep .5s .18s ease-out forwards; }
+  #intro .b3 { top:64%; background:#17307a; animation:sweep .5s .3s ease-out forwards; }
+  #intro .b4 { top:82%; background:#e01f26; animation:sweep .5s .42s ease-out forwards; }
+  @keyframes sweep { from { transform:translateX(-70%) skewY(-6deg); opacity:0; } to { transform:translateX(0) skewY(-6deg); opacity:1; } }
+  #intro .ring { position:absolute; width:130vmin; height:130vmin; border:3px solid rgba(120,160,255,.35); border-radius:50%; animation:ringspin 7s linear infinite; }
+  #intro .ring:before { content:''; position:absolute; inset:12%; border:2px dashed rgba(255,214,10,.5); border-radius:50%; }
+  @keyframes ringspin { to { transform:rotate(360deg); } }
+  #introTxt { position:relative; z-index:2; text-align:center; padding:0 16px; }
+  #introBreaking { font-size:13.5vw; font-weight:900; letter-spacing:1px; line-height:.98; color:#fff; text-shadow:0 6px 0 #e01f26, 0 14px 44px rgba(0,0,0,.7); opacity:0; transform:scale(2.4); }
+  #introBreaking.slam { animation:slam .45s .55s cubic-bezier(.2,1.4,.4,1) forwards; }
+  @keyframes slam { to { opacity:1; transform:scale(1); } }
+  #introChan { margin-top:14px; font-size:5.4vw; font-weight:800; letter-spacing:4px; color:#ffd60a; opacity:0; }
+  #introChan.slam { animation:fadeup .4s 1.05s ease-out forwards; }
+  @keyframes fadeup { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
+  @media (min-width:700px){ #introBreaking{ font-size:92px; } #introChan{ font-size:34px; } }
+
+  /* ===== Live overlay ===== */
+  #livebug { position:absolute; top:calc(10px + env(safe-area-inset-top)); left:12px; z-index:10; display:flex; align-items:center; gap:7px; background:#e01f26; border-radius:7px; padding:6px 12px; font-weight:900; font-size:16.5px; letter-spacing:1.5px; box-shadow:0 4px 16px rgba(0,0,0,.45); }
+  #livebug .dot { width:11px; height:11px; border-radius:50%; background:#fff; animation:blink 1.1s steps(2) infinite; }
+  @keyframes blink { 50% { opacity:.15; } }
+  #clockbug { position:absolute; top:calc(10px + env(safe-area-inset-top)); right:12px; z-index:10; background:rgba(5,8,20,.72); border:1px solid rgba(255,255,255,.25); border-radius:7px; padding:6px 11px; font-weight:800; font-size:14.5px; letter-spacing:1px; font-variant-numeric:tabular-nums; }
+  #chanbug { position:absolute; top:calc(52px + env(safe-area-inset-top)); right:12px; z-index:10; background:rgba(5,8,20,.72); border:1px solid rgba(255,214,10,.6); color:#ffd60a; border-radius:7px; padding:4px 10px; font-weight:900; font-size:13px; letter-spacing:2px; }
+  #lower { position:absolute; left:0; right:0; bottom:64px; z-index:10; padding:0 10px; pointer-events:none; }
+  #lower .row1 { display:flex; align-items:stretch; gap:0; filter:drop-shadow(0 6px 18px rgba(0,0,0,.5)); }
+  #brk { background:#e01f26; color:#fff; font-weight:900; font-size:19px; letter-spacing:.6px; padding:10px 14px; display:flex; align-items:center; white-space:nowrap; border-radius:8px 0 0 0; }
+  #loc { background:#f5f7ff; color:#12235c; font-weight:800; font-size:15.5px; padding:10px 14px; display:flex; align-items:center; flex:1; border-radius:0 8px 0 0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+  #headline { background:rgba(6,10,26,.88); color:#fff; font-weight:800; font-size:21px; line-height:1.2; padding:11px 14px; border-left:6px solid #ffd60a; }
+  #reporter { background:rgba(6,10,26,.88); color:#ffd60a; font-weight:700; font-size:14.5px; padding:0 14px 10px; border-left:6px solid #ffd60a; }
+  #tickerwrap { position:absolute; left:0; right:0; bottom:0; height:40px; z-index:10; background:#0a1230; border-top:3px solid #e01f26; display:flex; align-items:center; overflow:hidden; }
+  #tickerlbl { background:#ffd60a; color:#111; font-weight:900; font-size:13.5px; letter-spacing:1px; padding:0 10px; height:100%; display:flex; align-items:center; white-space:nowrap; z-index:2; }
+  #ticker { white-space:nowrap; font-size:15.5px; font-weight:600; color:#eef2ff; will-change:transform; }
+  #ticker span { padding-right:64px; }
+
+  /* ===== Controls ===== */
+  #controls { position:absolute; left:0; right:0; bottom:52px; z-index:20; display:flex; justify-content:center; gap:10px; padding:0 12px; }
+  .cbtn { background:rgba(10,16,40,.82); color:#fff; border:1.5px solid rgba(255,255,255,.4); border-radius:999px; padding:11px 16px; font-size:15.5px; font-weight:800; cursor:pointer; backdrop-filter:blur(4px); }
+  .cbtn:active { transform:scale(.95); }
+  #snap { background:#e01f26; border-color:#ff7a72; font-size:17px; padding:12px 22px; box-shadow:0 8px 24px rgba(224,31,38,.5); }
+  #panel { position:absolute; left:0; right:0; bottom:0; z-index:35; background:#101736; border-top:2px solid #33448a; border-radius:18px 18px 0 0; padding:16px 16px calc(18px + env(safe-area-inset-bottom)); max-height:72%; overflow:auto; }
+  #panel h3 { margin:2px 0 10px; font-size:16px; letter-spacing:.4px; }
+  #panel label { display:block; font-size:12.5px; font-weight:800; letter-spacing:1.4px; color:#8fa3d9; text-transform:uppercase; margin:12px 0 5px; }
+  #panel input[type=text] { width:100%; background:#0a102c; border:1.5px solid #33448a; color:#fff; border-radius:10px; padding:11px 12px; font-size:16px; }
+  #panel .row { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
+  #savePhoto { position:absolute; inset:0; z-index:45; background:rgba(3,5,12,.92); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; padding:20px; text-align:center; }
+  #savePhoto img { max-width:92%; max-height:62%; border-radius:10px; border:2px solid #33448a; }
+  #flash { position:absolute; inset:0; background:#fff; opacity:0; z-index:44; pointer-events:none; }
+  #err { position:absolute; left:50%; top:44%; transform:translate(-50%,-50%); z-index:50; background:#2a0f14; border:1.5px solid #e01f26; color:#ffd9d6; border-radius:12px; padding:16px 18px; max-width:86%; font-size:15px; line-height:1.45; text-align:center; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <video id="vid" autoplay playsinline muted></video>
+
+  <!-- Live overlay -->
+  <div id="overlay" class="hidden">
+    <div id="livebug"><span class="dot"></span><span id="liveTxt">LIVE</span></div>
+    <div id="clockbug">--:--:--</div>
+    <div id="chanbug">TRN</div>
+    <div id="lower">
+      <div class="row1"><div id="brk">BREAKING NEWS</div><div id="loc">ORLANDO</div></div>
+      <div id="headline">LOCAL DAD DECLARES HIMSELF KING OF THE REMOTE</div>
+      <div id="reporter">Reporting live: Jeremy Levin</div>
+    </div>
+    <div id="tickerwrap"><div id="tickerlbl">LATEST</div><div id="ticker"></div></div>
+    <div id="controls">
+      <button class="cbtn" id="btnDice" title="Random headline">🎲</button>
+      <button class="cbtn" id="snap">📸 PHOTO</button>
+      <button class="cbtn" id="btnFlip" title="Flip camera">🔄</button>
+      <button class="cbtn" id="btnEdit">⚙️ EDIT</button>
+    </div>
+  </div>
+
+  <!-- Edit panel -->
+  <div id="panel" class="hidden">
+    <h3>⚙️ Newsroom controls</h3>
+    <label>Language / Idioma</label>
+    <div class="langrow" id="langRow2"></div>
+    <label>Headline</label>
+    <input type="text" id="fHeadline" maxlength="110">
+    <label>Location</label>
+    <input type="text" id="fLoc" maxlength="40">
+    <label>Reporter</label>
+    <input type="text" id="fReporter" maxlength="40">
+    <label>Ticker</label>
+    <input type="text" id="fTicker" maxlength="220">
+    <label>Channel</label>
+    <input type="text" id="fChan" maxlength="8">
+    <div class="row">
+      <button class="cbtn" id="btnReplay">▶️ Replay intro</button>
+      <button class="cbtn" id="btnDone" style="background:#e01f26;border-color:#ff7a72;">DONE</button>
+    </div>
+  </div>
+
+  <!-- Save photo -->
+  <div id="savePhoto" class="hidden">
+    <div style="font-weight:900;font-size:19px;">📸 Your news photo</div>
+    <img id="shotImg" alt="Your breaking news photo">
+    <div style="color:#b9c4e4;font-size:14px;">On a phone: press &amp; hold the photo to save it — or tap Share.</div>
+    <div style="display:flex;gap:10px;">
+      <button class="cbtn" id="btnShare">Share</button>
+      <button class="cbtn" id="btnBack" style="background:#e01f26;border-color:#ff7a72;">Back to LIVE</button>
+    </div>
+  </div>
+
+  <!-- Intro -->
+  <div id="intro" class="hidden">
+    <div class="ring"></div>
+    <div class="bars"><div class="bar b1"></div><div class="bar b2"></div><div class="bar b3"></div><div class="bar b4"></div></div>
+    <div id="introTxt"><div id="introBreaking">BREAKING NEWS</div><div id="introChan">TOTALLY REAL NEWS</div></div>
+  </div>
+
+  <!-- Start -->
+  <div id="start">
+    <div><span class="globe">🌐</span></div>
+    <h1>BREAKING NEWS<br><span class="red">CAMERA</span></h1>
+    <p>Pull out your phone, hit GO LIVE, and become the news. A dramatic breaking-news intro plays, then your camera goes live with the full news graphic — in 8 languages.</p>
+    <div class="lbl">Choose your language</div>
+    <div class="langrow" id="langRow"></div>
+    <button id="goLive">🔴 GO LIVE</button>
+    <p style="font-size:12.5px;color:#63749f;">Your camera stays on your phone — nothing is uploaded anywhere.</p>
+  </div>
+
+  <div id="flash"></div>
+  <div id="err" class="hidden"></div>
+</div>
+
+<script>
+(function(){
+'use strict';
+var $ = function(id){ return document.getElementById(id); };
+
+var LANGS = {
+  en: { name:'English', flag:'🇺🇸', live:'LIVE', breaking:'BREAKING NEWS', chan:'TOTALLY REAL NEWS', from:'LIVE FROM', rep:'Reporting live', tickerLbl:'LATEST', loc:'ORLANDO, FL',
+    speak:'en-US', speakTxt:'Breaking news!',
+    headlines:['LOCAL DAD DECLARES HIMSELF KING OF THE REMOTE','MAN BUYS MILK, RETURNS HOME A HERO','AREA BOY DECLARES BROCCOLI "NOT A FOOD"','DOG ELECTED MAYOR IN LANDSLIDE, AGAIN','LOCAL HERO FINDS TV REMOTE IN UNDER 3 MINUTES'],
+    ticker:'TRAFFIC ON I-4 STILL JUST TRAFFIC +++ WEATHER: FLORIDA. JUST FLORIDA +++ EXPERTS CONFIRM MONDAY IS STILL THE WORST +++' },
+  es: { name:'Español', flag:'🇪🇸', live:'EN VIVO', breaking:'ÚLTIMA HORA', chan:'NOTICIAS DE VERDAD', from:'EN DIRECTO DESDE', rep:'En directo', tickerLbl:'ÚLTIMO', loc:'ORLANDO, FL',
+    speak:'es-ES', speakTxt:'¡Última hora!',
+    headlines:['UN PADRE LOCAL SE DECLARA REY DEL MANDO A DISTANCIA','HOMBRE COMPRA LECHE Y VUELVE COMO UN HÉROE','NIÑO DECLARA QUE EL BRÓCOLI "NO ES COMIDA"','PERRO ELEGIDO ALCALDE POR SEGUNDA VEZ'],
+    ticker:'EL TRÁFICO SIGUE SIENDO TRÁFICO +++ EL TIEMPO: SOL, COMO SIEMPRE +++ LOS EXPERTOS CONFIRMAN QUE HOY ES HOY +++' },
+  fr: { name:'Français', flag:'🇫🇷', live:'EN DIRECT', breaking:'FLASH INFO', chan:'INFOS PRESQUE VRAIES', from:'EN DIRECT DE', rep:'En direct', tickerLbl:'DERNIÈRE', loc:'ORLANDO',
+    speak:'fr-FR', speakTxt:'Flash info !',
+    headlines:['UN PÈRE SE DÉCLARE ROI DE LA TÉLÉCOMMANDE','UN HOMME ACHÈTE DU LAIT ET DEVIENT UN HÉROS','UN ENFANT DÉCLARE QUE LE BROCOLI N\'EST PAS UN ALIMENT'],
+    ticker:'LA CIRCULATION RESTE LA CIRCULATION +++ MÉTÉO : DU SOLEIL, ÉTONNANT +++ LES EXPERTS CONFIRMENT QUE C\'EST BIEN AUJOURD\'HUI +++' },
+  de: { name:'Deutsch', flag:'🇩🇪', live:'LIVE', breaking:'EILMELDUNG', chan:'WIRKLICH ECHTE NEWS', from:'LIVE AUS', rep:'Live vor Ort', tickerLbl:'AKTUELL', loc:'ORLANDO',
+    speak:'de-DE', speakTxt:'Eilmeldung!',
+    headlines:['VATER ERKLÄRT SICH ZUM KÖNIG DER FERNBEDIENUNG','MANN KAUFT MILCH UND KEHRT ALS HELD ZURÜCK','JUNGE ERKLÄRT: BROKKOLI IST KEIN ESSEN'],
+    ticker:'DER VERKEHR IST WEITERHIN VERKEHR +++ WETTER: SONNE, WIE IMMER +++ EXPERTEN BESTÄTIGEN: HEUTE IST HEUTE +++' },
+  it: { name:'Italiano', flag:'🇮🇹', live:'DIRETTA', breaking:"ULTIM'ORA", chan:'NOTIZIE VERISSIME', from:'IN DIRETTA DA', rep:'In diretta', tickerLbl:'ULTIME', loc:'ORLANDO',
+    speak:'it-IT', speakTxt:'Ultim\'ora!',
+    headlines:['PADRE SI DICHIARA RE DEL TELECOMANDO','UOMO COMPRA IL LATTE E TORNA DA EROE','BAMBINO DICHIARA: I BROCCOLI NON SONO CIBO'],
+    ticker:'IL TRAFFICO È SEMPRE TRAFFICO +++ METEO: SOLE, COME SEMPRE +++ GLI ESPERTI CONFERMANO: OGGI È OGGI +++' },
+  pt: { name:'Português', flag:'🇧🇷', live:'AO VIVO', breaking:'URGENTE', chan:'NOTÍCIAS DE VERDADE', from:'AO VIVO DE', rep:'Ao vivo', tickerLbl:'AGORA', loc:'ORLANDO',
+    speak:'pt-BR', speakTxt:'Urgente!',
+    headlines:['PAI SE DECLARA REI DO CONTROLE REMOTO','HOMEM COMPRA LEITE E VOLTA COMO HERÓI','MENINO DECLARA: BRÓCOLIS NÃO É COMIDA'],
+    ticker:'O TRÂNSITO CONTINUA TRÂNSITO +++ TEMPO: SOL, COMO SEMPRE +++ ESPECIALISTAS CONFIRMAM: HOJE É HOJE +++' },
+  ja: { name:'日本語', flag:'🇯🇵', live:'生中継', breaking:'速報', chan:'ほんとニュース', from:'生中継', rep:'現場から', tickerLbl:'最新', loc:'オーランド',
+    speak:'ja-JP', speakTxt:'速報です！',
+    headlines:['お父さん、リモコンの王様を宣言','牛乳を買った男性、英雄として帰宅','男の子「ブロッコリーは食べ物じゃない」'],
+    ticker:'渋滞は今日も渋滞です +++ 天気は晴れ、いつも通り +++ 今日は今日であることを確認 +++' },
+  he: { name:'עברית', flag:'🇮🇱', live:'שידור חי', breaking:'חדשות מתפרצות', chan:'חדשות אמיתיות לגמרי', from:'בשידור חי מ', rep:'מדווח מהשטח', tickerLbl:'עדכון', loc:'אורלנדו',
+    speak:'he-IL', speakTxt:'חדשות מתפרצות!',
+    headlines:['אבא מקומי הכריז על עצמו כמלך השלט','איש קנה חלב וחזר הביתה גיבור','ילד הכריז: ברוקולי זה לא אוכל'],
+    ticker:'הפקקים עדיין פקקים +++ מזג האוויר: שמש, כמו תמיד +++ מומחים מאשרים: היום זה היום +++' }
+};
+
+var lang = 'en';
+var facing = 'environment';
+var stream = null;
+var tickerX = 0, tickerW = 0, lastTs = 0;
+var shotBlob = null;
+
+function L(){ return LANGS[lang]; }
+
+function buildLangRows(){
+  ['langRow','langRow2'].forEach(function(rid){
+    var row = $(rid); row.innerHTML = '';
+    Object.keys(LANGS).forEach(function(k){
+      var b = document.createElement('button');
+      b.className = 'langbtn' + (k === lang ? ' on' : '');
+      b.textContent = LANGS[k].flag + ' ' + LANGS[k].name;
+      b.onclick = function(){ setLang(k); };
+      row.appendChild(b);
+    });
+  });
+}
+function applyLang(){
+  var d = L();
+  $('liveTxt').textContent = d.live;
+  $('brk').textContent = d.breaking;
+  $('tickerlbl').textContent = d.tickerLbl;
+  if (!$('fHeadline').dataset.touched) $('headline').textContent = d.headlines[0];
+  if (!$('fTicker').dataset.touched) setTicker(d.ticker);
+  if (!$('fLoc').dataset.touched) $('loc').textContent = d.from + ' ' + d.loc;
+  if (!$('fReporter').dataset.touched) $('reporter').textContent = d.rep + ': ' + reporterName();
+  $('chanbug').textContent = chanShort();
+}
+function reporterName(){
+  var v = ($('fReporter').value || '').trim();
+  return v || 'Jeremy Levin';
+}
+function chanShort(){
+  var v = ($('fChan').value || '').trim().toUpperCase();
+  return v || 'TRN';
+}
+function setTicker(t){
+  $('ticker').innerHTML = '<span>' + t + '</span><span>' + t + '</span>';
+  tickerX = 0;
+  requestAnimationFrame(function(){ tickerW = $('ticker').firstChild ? $('ticker').firstChild.offsetWidth : 0; });
+}
+function setLang(k){
+  lang = k;
+  buildLangRows();
+  applyLang();
+}
+
+/* ---- clock ---- */
+setInterval(function(){
+  var d = new Date();
+  function p(n){ return (n < 10 ? '0' : '') + n; }
+  $('clockbug').textContent = p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+}, 250);
+
+/* ---- ticker animation ---- */
+function tick(ts){
+  if (!lastTs) lastTs = ts;
+  var dt = Math.min(64, ts - lastTs); lastTs = ts;
+  if (tickerW > 0 && !$('overlay').classList.contains('hidden')){
+    tickerX -= dt * 0.09;
+    if (-tickerX >= tickerW) tickerX += tickerW;
+    $('ticker').style.transform = 'translateX(' + tickerX + 'px)';
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+/* ---- dramatic sting (WebAudio) + voice ---- */
+var AC = null;
+function sting(){
+  try{
+    if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
+    if (AC.state === 'suspended') AC.resume();
+    var t = AC.currentTime;
+    function hit(when, freq, dur, gain){
+      var o = AC.createOscillator(), g = AC.createGain();
+      o.type = 'sawtooth'; o.frequency.value = freq;
+      var o2 = AC.createOscillator(), g2 = AC.createGain();
+      o2.type = 'square'; o2.frequency.value = freq / 2;
+      g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(gain, when + 0.02); g.gain.exponentialRampToValueAtTime(0.001, when + dur);
+      g2.gain.setValueAtTime(0, when); g2.gain.linearRampToValueAtTime(gain * 0.7, when + 0.02); g2.gain.exponentialRampToValueAtTime(0.001, when + dur);
+      o.connect(g).connect(AC.destination); o2.connect(g2).connect(AC.destination);
+      o.start(when); o.stop(when + dur + 0.05); o2.start(when); o2.stop(when + dur + 0.05);
+    }
+    hit(t + 0.05, 98, 0.5, 0.20);
+    hit(t + 0.55, 98, 0.5, 0.22);
+    hit(t + 1.05, 147, 1.3, 0.26);
+    /* whoosh */
+    var len = AC.sampleRate * 0.7, buf = AC.createBuffer(1, len, AC.sampleRate), ch = buf.getChannelData(0);
+    for (var i = 0; i < len; i++) ch[i] = (Math.random() * 2 - 1) * (i / len);
+    var src = AC.createBufferSource(); src.buffer = buf;
+    var f = AC.createBiquadFilter(); f.type = 'bandpass'; f.Q.value = 1.2;
+    f.frequency.setValueAtTime(300, t); f.frequency.exponentialRampToValueAtTime(2800, t + 0.6);
+    var ng = AC.createGain(); ng.gain.setValueAtTime(0.14, t); ng.gain.exponentialRampToValueAtTime(0.001, t + 0.7);
+    src.connect(f).connect(ng).connect(AC.destination); src.start(t);
+  }catch(e){}
+}
+function speakBreaking(){
+  try{
+    var d = L();
+    var u = new SpeechSynthesisUtterance(d.speakTxt);
+    u.lang = d.speak; u.rate = 0.92; u.pitch = 0.7; u.volume = 1;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+/* ---- intro sequence ---- */
+function playIntro(done){
+  var d = L();
+  var intro = $('intro');
+  $('introBreaking').textContent = d.breaking;
+  $('introChan').textContent = d.chan;
+  $('introBreaking').classList.remove('slam');
+  $('introChan').classList.remove('slam');
+  intro.classList.remove('hidden');
+  void intro.offsetWidth; /* restart animations */
+  var bars = intro.querySelectorAll('.bar');
+  bars.forEach(function(b){ b.style.animation = 'none'; void b.offsetWidth; b.style.animation = ''; });
+  sting();
+  setTimeout(function(){ $('introBreaking').classList.add('slam'); }, 30);
+  setTimeout(function(){ $('introChan').classList.add('slam'); speakBreaking(); }, 60);
+  setTimeout(function(){ intro.classList.add('hidden'); if (done) done(); }, 3600);
+}
+
+/* ---- camera ---- */
+function showErr(msg){
+  var e = $('err'); e.textContent = msg; e.classList.remove('hidden');
+  setTimeout(function(){ e.classList.add('hidden'); }, 6000);
+}
+async function startCamera(){
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    showErr('This browser cannot open the camera here. Open this page in Safari or Chrome on your phone and allow camera access.');
+    return false;
+  }
+  try{
+    if (stream) stream.getTracks().forEach(function(t){ t.stop(); });
+    stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode: facing, width:{ ideal:1920 }, height:{ ideal:1080 } }, audio:false });
+    $('vid').srcObject = stream;
+    return true;
+  }catch(e){
+    showErr('Camera blocked. Please allow camera access for this site in your browser settings, then tap GO LIVE again.');
+    return false;
+  }
+}
+
+$('goLive').onclick = async function(){
+  var ok = await startCamera();
+  if (!ok) return;
+  $('start').classList.add('hidden');
+  playIntro(function(){ $('overlay').classList.remove('hidden'); });
+};
+
+$('btnFlip').onclick = async function(){
+  facing = (facing === 'environment') ? 'user' : 'environment';
+  await startCamera();
+};
+$('btnDice').onclick = function(){
+  var hs = L().headlines;
+  $('headline').textContent = hs[Math.floor(Math.random() * hs.length)];
+};
+$('btnEdit').onclick = function(){
+  $('fHeadline').value = $('headline').textContent;
+  $('fLoc').value = $('loc').textContent;
+  $('fReporter').value = reporterName();
+  $('fTicker').value = L().ticker;
+  $('fChan').value = chanShort();
+  $('panel').classList.remove('hidden');
+};
+$('btnDone').onclick = function(){
+  $('headline').textContent = $('fHeadline').value || $('headline').textContent;
+  $('loc').textContent = $('fLoc').value || $('loc').textContent;
+  $('reporter').textContent = L().rep + ': ' + reporterName();
+  setTicker($('fTicker').value || L().ticker);
+  $('chanbug').textContent = chanShort();
+  $('panel').classList.add('hidden');
+};
+['fHeadline','fTicker','fLoc','fReporter','fChan'].forEach(function(id){
+  $(id).addEventListener('input', function(){ $(id).dataset.touched = '1'; });
+});
+$('btnReplay').onclick = function(){
+  $('panel').classList.add('hidden');
+  $('overlay').classList.add('hidden');
+  playIntro(function(){ $('overlay').classList.remove('hidden'); });
+};
+
+/* ---- photo (overlay burned in) ---- */
+function rr(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+$('snap').onclick = function(){
+  var v = $('vid');
+  if (!v.videoWidth){ showErr('Camera is still warming up — give it a second and tap again.'); return; }
+  var fl = $('flash'); fl.style.transition = 'none'; fl.style.opacity = '0.9';
+  setTimeout(function(){ fl.style.transition = 'opacity .45s'; fl.style.opacity = '0'; }, 40);
+  var W = v.videoWidth, H = v.videoHeight;
+  var cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  var ctx = cv.getContext('2d');
+  ctx.drawImage(v, 0, 0, W, H);
+  var u = Math.max(W, H) / 100; /* scale unit */
+  var d = L();
+  /* LIVE bug */
+  ctx.fillStyle = '#e01f26'; rr(ctx, 1.2 * u, 1.2 * u, 11 * u, 4.6 * u, 0.8 * u); ctx.fill();
+  ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(3.4 * u, 3.5 * u, 0.85 * u, 0, 7); ctx.fill();
+  ctx.font = '900 ' + (2.6 * u) + 'px Arial'; ctx.textBaseline = 'middle';
+  ctx.fillText(d.live, 5 * u, 3.6 * u);
+  /* clock */
+  ctx.font = '800 ' + (2.1 * u) + 'px Arial';
+  var ct = $('clockbug').textContent, ctw = ctx.measureText(ct).width;
+  ctx.fillStyle = 'rgba(5,8,20,.72)'; rr(ctx, W - ctw - 3.4 * u, 1.2 * u, ctw + 2.2 * u, 4.2 * u, 0.8 * u); ctx.fill();
+  ctx.fillStyle = '#fff'; ctx.fillText(ct, W - ctw - 2.3 * u, 3.4 * u);
+  /* lower third */
+  var ly = H - 26 * u;
+  ctx.font = '900 ' + (3 * u) + 'px Arial';
+  var bw = ctx.measureText(d.breaking).width + 3 * u;
+  ctx.fillStyle = '#e01f26'; ctx.fillRect(1 * u, ly, bw, 5.6 * u);
+  ctx.fillStyle = '#fff'; ctx.fillText(d.breaking, 2.5 * u, ly + 2.9 * u);
+  ctx.fillStyle = '#f5f7ff'; ctx.fillRect(1 * u + bw, ly, W - 2 * u - bw, 5.6 * u);
+  ctx.fillStyle = '#12235c'; ctx.font = '800 ' + (2.4 * u) + 'px Arial';
+  ctx.fillText($('loc').textContent, 1 * u + bw + 1.6 * u, ly + 2.9 * u);
+  ctx.fillStyle = 'rgba(6,10,26,.9)'; ctx.fillRect(1 * u, ly + 5.6 * u, W - 2 * u, 8.6 * u);
+  ctx.fillStyle = '#ffd60a'; ctx.fillRect(1 * u, ly + 5.6 * u, 0.7 * u, 8.6 * u);
+  ctx.fillStyle = '#fff'; ctx.font = '800 ' + (3.1 * u) + 'px Arial';
+  var hl = $('headline').textContent;
+  while (ctx.measureText(hl).width > W - 5 * u && hl.length > 4) hl = hl.slice(0, -1);
+  ctx.fillText(hl, 2.6 * u, ly + 8.6 * u);
+  ctx.fillStyle = '#ffd60a'; ctx.font = '700 ' + (2.2 * u) + 'px Arial';
+  ctx.fillText($('reporter').textContent, 2.6 * u, ly + 12.4 * u);
+  /* ticker */
+  ctx.fillStyle = '#0a1230'; ctx.fillRect(0, H - 6.4 * u, W, 6.4 * u);
+  ctx.fillStyle = '#e01f26'; ctx.fillRect(0, H - 6.4 * u, W, 0.5 * u);
+  ctx.fillStyle = '#ffd60a'; ctx.fillRect(0, H - 6.4 * u, 13 * u, 6.4 * u);
+  ctx.fillStyle = '#111'; ctx.font = '900 ' + (2.2 * u) + 'px Arial';
+  ctx.fillText(d.tickerLbl, 1.4 * u, H - 3.1 * u);
+  ctx.fillStyle = '#eef2ff'; ctx.font = '600 ' + (2.3 * u) + 'px Arial';
+  ctx.fillText(L().ticker, 14.5 * u, H - 3.1 * u);
+  cv.toBlob(function(blob){
+    shotBlob = blob;
+    $('shotImg').src = URL.createObjectURL(blob);
+    $('savePhoto').classList.remove('hidden');
+  }, 'image/jpeg', 0.92);
+};
+$('btnBack').onclick = function(){ $('savePhoto').classList.add('hidden'); };
+$('btnShare').onclick = async function(){
+  try{
+    if (shotBlob && navigator.canShare){
+      var f = new File([shotBlob], 'breaking-news.jpg', { type:'image/jpeg' });
+      if (navigator.canShare({ files:[f] })){ await navigator.share({ files:[f], title:'Breaking News' }); return; }
+    }
+    if (shotBlob){ var a = document.createElement('a'); a.href = URL.createObjectURL(shotBlob); a.download = 'breaking-news.jpg'; a.click(); }
+  }catch(e){}
+};
+
+buildLangRows();
+applyLang();
+setTicker(L().ticker);
+})();
+</script>
+</body>
+</html>
