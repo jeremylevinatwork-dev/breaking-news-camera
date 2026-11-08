@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-build="news-20261108-1725">
+<html lang="en" data-build="news-20261108-1736">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
@@ -71,20 +71,21 @@
   .vutrack i { display:block; height:100%; width:20%; background:linear-gradient(90deg,#2ea85c 0, #2ea85c 62%, #d8a711 80%, #c8102e 94%); background-size:76px 100%; background-repeat:no-repeat; }
   #tape { position:absolute; top:calc(96px + env(safe-area-inset-top)); left:-2%; width:104%; z-index:11; background:#f2c018; color:#141414; font-weight:700; font-size:13.5px; letter-spacing:2.5px; text-align:center; padding:5px 0 6px; transform:rotate(-1.2deg); box-shadow:0 2px 8px rgba(0,0,0,.35); white-space:nowrap; overflow:hidden; border-top:1px dashed rgba(0,0,0,.25); border-bottom:1px dashed rgba(0,0,0,.25); }
   #scenetag { display:inline-block; background:#12235c; color:#fff; font-weight:600; font-size:10px; letter-spacing:1.5px; padding:3px 7px; border-left:3px solid #c8102e; margin-bottom:0; }
-  #micflag { position:absolute; left:50%; top:36%; transform:translate(-50%,-50%); z-index:10; text-align:center; pointer-events:none; }
-  #micflag .cube { width:84px; height:84px; margin:0 auto; background:#0d2150; border-bottom:7px solid #c8102e; border-radius:3px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px; letter-spacing:1px; color:#fff; padding:6px; text-align:center; line-height:1.15; box-shadow:0 6px 18px rgba(0,0,0,.4); }
-  #micflag .stick { width:6px; height:42px; background:#1a1a1a; margin:0 auto; }
+  #micflag { position:absolute; left:50%; bottom:calc(100% + 6px); transform:translateX(-50%); z-index:10; text-align:center; pointer-events:none; }
+  #micflag .cube { width:clamp(52px, min(18vw, 24dvh), 108px); aspect-ratio:1/1; margin:0 auto; background:#0d2150; border-bottom:7px solid #c8102e; border-radius:3px; display:flex; align-items:center; justify-content:center; padding:5px; overflow:hidden; box-shadow:0 6px 18px rgba(0,0,0,.4); container-type:inline-size; }
+  #micflag .cube span { display:block; white-space:nowrap; font-weight:800; font-size:15cqw; letter-spacing:.03em; color:#fff; line-height:1.1; }
+  #micflag .stick { width:5px; height:24px; background:#1a1a1a; margin:0 auto; }
   .scenerow { display:flex; gap:8px; flex-wrap:wrap; }
   .scenebtn { background:#1a2450; color:#dbe4ff; border:1.5px solid #33448a; border-radius:999px; padding:9px 13px; font-size:14px; font-weight:700; cursor:pointer; }
   .scenebtn.on { background:#fff; color:#0a1230; border-color:#fff; }
   #chanbug { position:absolute; top:calc(38px + env(safe-area-inset-top)); right:12px; z-index:10; background:rgba(0,0,0,.55); color:#fff; border-radius:2px; padding:3px 7px; font-weight:600; font-size:11px; letter-spacing:2px; }
   #bottomstack { position:absolute; left:0; right:0; bottom:0; z-index:10; display:flex; flex-direction:column; }
   #lower { order:1; padding:0 12px; margin-bottom:8px; pointer-events:none; width:min(88%,720px); }
-  #lower .row1 { display:flex; align-items:stretch; gap:0; }
-  #brk { background:#c8102e; color:#fff; font-weight:700; font-size:11.5px; letter-spacing:1px; padding:5px 9px; display:flex; align-items:center; white-space:nowrap; text-transform:uppercase; }
-  #loc { background:#fff; color:#14213d; font-weight:600; font-size:11.5px; letter-spacing:.4px; padding:5px 9px; display:flex; align-items:center; flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; text-transform:uppercase; }
+  #lower .row1 { display:flex; align-items:stretch; gap:0; min-width:0; }
+  #brk { flex:0 0 auto; background:#c8102e; color:#fff; font-weight:700; font-size:11.5px; letter-spacing:1px; padding:5px 9px; display:flex; align-items:center; white-space:nowrap; text-transform:uppercase; }
+  #loc { background:#fff; color:#14213d; font-weight:600; font-size:11.5px; letter-spacing:.4px; padding:5px 9px; display:block; line-height:1.35; flex:1; min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; text-transform:uppercase; }
   #headline { background:rgba(10,17,40,.92); color:#fff; font-weight:600; font-size:12.5px; line-height:1.3; letter-spacing:0; padding:6px 10px; border-left:4px solid #c8102e; }
-  #reporter { background:rgba(10,17,40,.92); color:#c3cede; font-weight:500; font-size:11px; padding:4px 10px 5px; border-left:4px solid #c8102e; border-top:1px solid rgba(255,255,255,.14); }
+  #reporter { background:rgba(10,17,40,.92); color:#c3cede; font-weight:500; font-size:11px; padding:4px 10px 5px; border-left:4px solid #c8102e; border-top:1px solid rgba(255,255,255,.14); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   #tickerwrap { order:3; position:relative; height:34px; background:#0a1230; border-top:2px solid #c8102e; display:flex; align-items:center; overflow:hidden; }
   #tickerlbl { background:#fff; color:#0a1230; font-weight:800; font-size:12px; letter-spacing:1.5px; padding:0 10px; height:100%; display:flex; align-items:center; white-space:nowrap; z-index:2; }
   #ticker { white-space:nowrap; font-size:14px; font-weight:500; color:#e8ecf4; will-change:transform; }
@@ -112,8 +113,6 @@
     #reporter { font-size:10px; padding-bottom:4px; }
     #scenetag { font-size:9.5px; }
     #vu, #satbug { display:none; }
-    #micflag { top:30%; }
-    #micflag .cube { width:58px; height:58px; font-size:11px; border-bottom-width:5px; }
     #lower { width:min(68%,600px); margin-bottom:6px; }
     #tickerwrap { height:28px; }
     #ticker { font-size:12.5px; }
@@ -132,7 +131,6 @@
     #brk, #loc { font-size:12.5px; padding:6px 10px; }
     #reporter { font-size:12px; }
     .cbtn { font-size:13px; padding:9px 14px; }
-    #micflag .cube { width:104px; height:104px; font-size:18px; }
   }
   /* Wide but short screens (landscape foldable/tablet): keep the stack slim */
   @media (min-width:600px) and (max-height:620px) {
@@ -152,9 +150,16 @@
   @media (screen-spanning: single-fold-horizontal) {
     #lower { width:min(72%,720px); }
   }
+  /* Narrow portrait screens: lower third spans the safe width and tightens so nothing clips */
+  @media (max-width: 480px) {
+    #lower { width:100%; padding:0 8px; margin-bottom:6px; }
+    #scenetag { font-size:9.5px; padding:2px 6px; }
+    #brk, #loc { font-size:clamp(9.5px, 2.9vw, 11.5px); padding:4px 7px; }
+    #headline { font-size:12px; padding:5px 8px; }
+    #reporter { font-size:10.5px; padding:3px 8px 4px; }
+  }
   /* SELF REPORT: clean full-screen self-preview (the Duo Preview idea) — meter clutter off, broadcast graphics stay */
   body.selfview #vu, body.selfview #satbug { display:none; }
-  body.selfview #micflag { top:33%; }
   #flash { position:absolute; inset:0; background:#fff; opacity:0; z-index:44; pointer-events:none; }
   #err { position:absolute; left:50%; top:44%; transform:translate(-50%,-50%); z-index:50; background:#2a0f14; border:1.5px solid #e01f26; color:#ffd9d6; border-radius:12px; padding:16px 18px; max-width:86%; font-size:15px; line-height:1.45; text-align:center; }
   .cbtn.on { background:#fff; color:#0a1230; border-color:#fff; }
@@ -175,8 +180,8 @@
     <div id="satbug">SAT UPLINK ▂▄▆█</div>
     <div id="vu"><div class="vutick"><span style="left:55%">-20</span><span style="left:78%">-9</span><span style="left:93%">0</span></div><div class="vurow"><em>1</em><div class="vutrack"><i id="vu1"></i></div></div><div class="vurow"><em>2</em><div class="vutrack"><i id="vu2"></i></div></div><div class="vulbl">AUDIO</div></div>
     <div id="tape" class="hidden"></div>
-    <div id="micflag" class="hidden"><div class="cube" id="micCube">NEWSLINE</div><div class="stick"></div></div>
     <div id="bottomstack">
+    <div id="micflag" class="hidden"><div class="cube" id="micCube"><span id="micCubeTxt">NEWSLINE</span></div><div class="stick"></div></div>
     <div id="lower">
       <div><span id="scenetag">ON THE SCENE</span></div>
       <div class="row1"><div id="brk">BREAKING NEWS</div><div id="loc">ORLANDO</div></div>
@@ -528,6 +533,7 @@ $('btnDone').onclick = function(){
   updateReporterStrap();
   setTicker($('fTicker').value || L().ticker);
   $('chanbug').textContent = chanShort();
+  $('micCubeTxt').textContent = chanShort(); fitMicText();
   $('panel').classList.add('hidden');
   pokeControls();
 };
@@ -566,6 +572,19 @@ function rr(ctx, x, y, w, h, r){
   ctx.arcTo(x, y, x + w, y, r);
   ctx.closePath();
 }
+function drawMicFlag(ctx, W, H, u, lyTop){
+  var mw = Math.min(W * 0.18, H * 0.26);
+  var stickH = Math.max(2.2 * u, mw * 0.3);
+  var my = lyTop - 1.2 * u - stickH - mw;
+  var mx = W / 2 - mw / 2;
+  ctx.fillStyle = '#0d2150'; rr(ctx, mx, my, mw, mw, 0.3 * u); ctx.fill();
+  ctx.fillStyle = '#c8102e'; ctx.fillRect(mx, my + mw - Math.max(0.7 * u, mw * 0.08), mw, Math.max(0.7 * u, mw * 0.08));
+  ctx.fillStyle = '#1a1a1a'; ctx.fillRect(W / 2 - 0.3 * u, my + mw, 0.6 * u, stickH);
+  ctx.fillStyle = '#fff'; ctx.textAlign = 'center';
+  var mfs = mw * 0.17; ctx.font = '800 ' + mfs + 'px Arial';
+  while (ctx.measureText(chanShort()).width > mw - 1.2 * u && mfs > 0.8 * u){ mfs -= 0.2 * u; ctx.font = '800 ' + mfs + 'px Arial'; }
+  ctx.fillText(chanShort(), W / 2, my + mw / 2); ctx.textAlign = 'left';
+}
 $('snap').onclick = function(){
   var v = $('vid');
   if (!v.videoWidth){ showErr('Camera is still warming up — give it a second and tap again.'); return; }
@@ -594,6 +613,7 @@ $('snap').onclick = function(){
   var tct = $('tc') ? $('tc').textContent : '';
   ctx.fillText(tct, 7.4 * u, 7 * u);
   if (scene === 'crime'){ ctx.fillStyle = '#f2c018'; ctx.fillRect(0, 11.5 * u, W, 4 * u); ctx.fillStyle = '#141414'; ctx.font = '700 ' + (2.4 * u) + 'px Arial'; ctx.fillText('CRIME SCENE DO NOT CROSS — CRIME SCENE DO NOT CROSS — CRIME SCENE DO NOT CROSS', 2 * u, 13.6 * u); }
+  if (crewMode || selfMode) drawMicFlag(ctx, W, H, u, (H - 21.2 * u) - 4.4 * u);
   /* lower third */
   var ly = H - 21.2 * u;
   var lw = Math.round(W * 0.78);
@@ -603,7 +623,9 @@ $('snap').onclick = function(){
   ctx.fillStyle = '#fff'; ctx.fillText(d.breaking, 2.2 * u, ly + 2.25 * u);
   ctx.fillStyle = '#ffffff'; ctx.fillRect(1 * u + bw, ly, lw - bw, 4.4 * u);
   ctx.fillStyle = '#14213d'; ctx.font = '600 ' + (1.8 * u) + 'px Arial';
-  ctx.fillText($('loc').textContent, 1 * u + bw + 1.4 * u, ly + 2.25 * u);
+  var locT = $('loc').textContent, locMax = lw - bw - 3 * u;
+  if (ctx.measureText(locT).width > locMax){ while (locT.length > 4 && ctx.measureText(locT + '…').width > locMax) locT = locT.slice(0, -1); locT += '…'; }
+  ctx.fillText(locT, 1 * u + bw + 1.4 * u, ly + 2.25 * u);
   ctx.fillStyle = 'rgba(10,17,40,.92)'; ctx.fillRect(1 * u, ly + 4.4 * u, lw, 9.2 * u);
   ctx.fillStyle = '#c8102e'; ctx.fillRect(1 * u, ly + 4.4 * u, 0.55 * u, 9.2 * u);
   ctx.fillStyle = '#fff'; ctx.font = '600 ' + (2 * u) + 'px Arial';
@@ -672,10 +694,21 @@ function setScene(k){
     row.appendChild(b);
   });
 })();
+function fitMicText(){
+  var cube = $('micCube'), t = $('micCubeTxt');
+  if (!cube || !t) return;
+  var w = cube.clientWidth; if (!w) return;
+  var size = Math.max(8, Math.round(w * 0.17));
+  t.style.fontSize = size + 'px';
+  var guard = 30;
+  while (t.scrollWidth > w - 8 && size > 7 && guard-- > 0){ size -= 1; t.style.fontSize = size + 'px'; }
+}
 function micFlagSync(){
   $('micflag').classList.toggle('hidden', !(crewMode || selfMode));
-  $('micCube').textContent = chanShort();
+  $('micCubeTxt').textContent = chanShort();
+  if (crewMode || selfMode) requestAnimationFrame(fitMicText);
 }
+window.addEventListener('resize', function(){ if (crewMode || selfMode) fitMicText(); });
 async function setSelfMode(on){
   selfMode = !!on;
   document.body.classList.toggle('selfview', selfMode);
@@ -743,16 +776,7 @@ function drawRecFrame(){
   ctx.fillText($('tc') ? $('tc').textContent : '', 11.5 * u, 7 * u);
   if (scene === 'crime'){ ctx.fillStyle = '#f2c018'; ctx.fillRect(0, 11.5 * u, W, 4 * u); ctx.fillStyle = '#141414'; ctx.font = '700 ' + (2.4 * u) + 'px Arial'; ctx.fillText('CRIME SCENE DO NOT CROSS — CRIME SCENE DO NOT CROSS — CRIME SCENE DO NOT CROSS', 2 * u, 13.6 * u); }
   /* mic flag in crew / self-report mode */
-  if (crewMode || selfMode){
-    var mw = 10 * u, mx = W / 2 - mw / 2, my = H - 42 * u;
-    ctx.fillStyle = '#0d2150'; rr(ctx, mx, my, mw, mw, 0.3 * u); ctx.fill();
-    ctx.fillStyle = '#c8102e'; ctx.fillRect(mx, my + mw - 0.9 * u, mw, 0.9 * u);
-    ctx.fillStyle = '#fff'; ctx.textAlign = 'center';
-    var mfs = 2.4 * u; ctx.font = '800 ' + mfs + 'px Arial';
-    while (ctx.measureText(chanShort()).width > mw - 1.4 * u && mfs > 0.9 * u){ mfs -= 0.2 * u; ctx.font = '800 ' + mfs + 'px Arial'; }
-    ctx.fillText(chanShort(), W / 2, my + mw / 2); ctx.textAlign = 'left';
-    ctx.fillStyle = '#1a1a1a'; ctx.fillRect(W / 2 - 0.35 * u, my + mw, 0.7 * u, 5 * u);
-  }
+  if (crewMode || selfMode) drawMicFlag(ctx, W, H, u, (H - 21.2 * u) - 4.4 * u);
   /* scene tag */
   ctx.font = '600 ' + (1.6 * u) + 'px Arial';
   var tag = $('scenetag').textContent, tagw = ctx.measureText(tag).width + 1.8 * u;
@@ -768,7 +792,9 @@ function drawRecFrame(){
   ctx.fillStyle = '#fff'; ctx.fillText(d.breaking, 2.2 * u, ly + 2.25 * u);
   ctx.fillStyle = '#ffffff'; ctx.fillRect(1 * u + bw, ly, lw - bw, 4.4 * u);
   ctx.fillStyle = '#14213d'; ctx.font = '600 ' + (1.8 * u) + 'px Arial';
-  ctx.fillText($('loc').textContent, 1 * u + bw + 1.4 * u, ly + 2.25 * u);
+  var locT = $('loc').textContent, locMax = lw - bw - 3 * u;
+  if (ctx.measureText(locT).width > locMax){ while (locT.length > 4 && ctx.measureText(locT + '…').width > locMax) locT = locT.slice(0, -1); locT += '…'; }
+  ctx.fillText(locT, 1 * u + bw + 1.4 * u, ly + 2.25 * u);
   ctx.fillStyle = 'rgba(10,17,40,.92)'; ctx.fillRect(1 * u, ly + 4.4 * u, lw, 9.2 * u);
   ctx.fillStyle = '#c8102e'; ctx.fillRect(1 * u, ly + 4.4 * u, 0.55 * u, 9.2 * u);
   ctx.fillStyle = '#fff'; ctx.font = '600 ' + (2 * u) + 'px Arial';
