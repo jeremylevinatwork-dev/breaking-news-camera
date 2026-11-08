@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-build="news-20261108-1630">
+<html lang="en" data-build="news-20261108-1645">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
@@ -99,6 +99,9 @@
   #panel .row { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
   #savePhoto { position:absolute; inset:0; z-index:45; background:rgba(3,5,12,.92); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; padding:20px; text-align:center; }
   #savePhoto img { max-width:92%; max-height:62%; border-radius:10px; border:2px solid #33448a; }
+  #btnRec { background:#e01f26; border-color:#ff7a72; font-size:17px; padding:12px 20px; box-shadow:0 8px 24px rgba(224,31,38,.5); }
+  #btnRec.recording { background:#fff; color:#e01f26; animation:pulse 1.2s ease-in-out infinite; }
+  #savePhoto video { max-width:92%; max-height:62%; border-radius:10px; border:2px solid #33448a; background:#000; }
   #flash { position:absolute; inset:0; background:#fff; opacity:0; z-index:44; pointer-events:none; }
   #err { position:absolute; left:50%; top:44%; transform:translate(-50%,-50%); z-index:50; background:#2a0f14; border:1.5px solid #e01f26; color:#ffd9d6; border-radius:12px; padding:16px 18px; max-width:86%; font-size:15px; line-height:1.45; text-align:center; }
 </style>
@@ -128,6 +131,7 @@
     <div id="controls">
       <button class="cbtn" id="btnDice" title="Random headline">🎲</button>
       <button class="cbtn" id="snap">📸 PHOTO</button>
+      <button class="cbtn" id="btnRec">🔴 RECORD</button>
       <button class="cbtn" id="btnFlip" title="Flip camera">🔄</button>
       <button class="cbtn" id="btnEdit">⚙️ EDIT</button>
       <button class="cbtn" id="btnCrew">🎤 CREW</button>
@@ -157,8 +161,9 @@
 
   <!-- Save photo -->
   <div id="savePhoto" class="hidden">
-    <div style="font-weight:900;font-size:19px;">📸 Your news photo</div>
+    <div style="font-weight:900;font-size:19px;" id="saveTitle">📸 Your news photo</div>
     <img id="shotImg" alt="Your breaking news photo">
+    <video id="shotVid" class="hidden" controls playsinline></video>
     <div style="color:#b9c4e4;font-size:14px;">On a phone: press &amp; hold the photo to save it — or tap Share.</div>
     <div style="display:flex;gap:10px;">
       <button class="cbtn" id="btnShare">Share</button>
@@ -203,6 +208,8 @@ var facing = 'environment';
 var stream = null;
 var tickerX = 0, tickerW = 0, lastTs = 0;
 var shotBlob = null;
+var lastMedia = null;
+var rec = { mr:null, chunks:[], startTs:0, raf:0, cv:null, ctx:null };
 var vuT = 0;
 
 function L(){ return LANGS[lang]; }
@@ -256,6 +263,7 @@ setInterval(function(){
   $('clockbug').textContent = p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
   var fr = Math.floor((Date.now() % 1000) / 40);
   var tcEl = $('tc'); if (tcEl) tcEl.textContent = 'TC ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds()) + ':' + p(fr);
+  if (rec.mr && rec.mr.state === 'recording'){ var rs = Math.floor((Date.now() - rec.startTs) / 1000); $('btnRec').textContent = '\u23F9 STOP ' + Math.floor(rs / 60) + ':' + p(rs % 60); }
 }, 250);
 
 /* ---- ticker animation ---- */
@@ -342,7 +350,8 @@ async function startCamera(){
   }
   try{
     if (stream) stream.getTracks().forEach(function(t){ t.stop(); });
-    stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode: facing, width:{ ideal:1920 }, height:{ ideal:1080 } }, audio:false });
+    try { stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode: facing, width:{ ideal:1920 }, height:{ ideal:1080 } }, audio:true }); }
+    catch(e2) { stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode: facing, width:{ ideal:1920 }, height:{ ideal:1080 } }, audio:false }); }
     $('vid').srcObject = stream;
     return true;
   }catch(e){
@@ -454,7 +463,9 @@ $('snap').onclick = function(){
   ctx.fillStyle = '#eef2ff'; ctx.font = '600 ' + (2.3 * u) + 'px Arial';
   ctx.fillText(L().ticker, 14.5 * u, H - 3.1 * u);
   cv.toBlob(function(blob){
-    shotBlob = blob;
+    shotBlob = blob; lastMedia = { kind:'photo', blob: blob, name:'breaking-news.jpg' };
+    $('saveTitle').textContent = '📸 Your news photo';
+    $('shotVid').classList.add('hidden'); $('shotImg').classList.remove('hidden');
     $('shotImg').src = URL.createObjectURL(blob);
     $('savePhoto').classList.remove('hidden');
   }, 'image/jpeg', 0.92);
@@ -514,6 +525,134 @@ $('btnCrew').onclick = async function(){
   }
 };
 setScene('scene');
+
+/* ---- Video recording (overlay burned in, mic audio) ---- */
+function drawRecFrame(){
+  var v = $('vid'); if (!v.videoWidth){ rec.raf = requestAnimationFrame(drawRecFrame); return; }
+  var ctx = rec.ctx, W = rec.cv.width, H = rec.cv.height;
+  var vw = v.videoWidth, vh = v.videoHeight, s = Math.max(W / vw, H / vh);
+  ctx.drawImage(v, (W - vw * s) / 2, (H - vh * s) / 2, vw * s, vh * s);
+  var u = Math.max(W, H) / 100, d = L();
+  ctx.textBaseline = 'middle';
+  /* LIVE bug */
+  ctx.fillStyle = '#e01f26'; rr(ctx, 1.2 * u, 1.2 * u, 11 * u, 4.6 * u, 0.8 * u); ctx.fill();
+  ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(3.4 * u, 3.5 * u, 0.85 * u, 0, 7); ctx.fill();
+  ctx.font = '900 ' + (2.6 * u) + 'px Arial'; ctx.fillText(d.live, 5 * u, 3.6 * u);
+  /* clock + TC */
+  ctx.font = '800 ' + (2.1 * u) + 'px Arial';
+  var ct = $('clockbug').textContent, ctw = ctx.measureText(ct).width;
+  ctx.fillStyle = 'rgba(5,8,20,.72)'; rr(ctx, W - ctw - 3.4 * u, 1.2 * u, ctw + 2.2 * u, 4.2 * u, 0.8 * u); ctx.fill();
+  ctx.fillStyle = '#fff'; ctx.fillText(ct, W - ctw - 2.3 * u, 3.4 * u);
+  ctx.fillStyle = '#ff5147'; ctx.font = '900 ' + (2 * u) + 'px Arial';
+  var rs = Math.floor((Date.now() - rec.startTs) / 1000);
+  ctx.fillText('● REC ' + Math.floor(rs / 60) + ':' + ('0' + (rs % 60)).slice(-2), 1.4 * u, 8 * u);
+  ctx.fillStyle = '#cfe0ff'; ctx.font = '700 ' + (2 * u) + 'px Arial';
+  ctx.fillText($('tc') ? $('tc').textContent : '', 13 * u, 8 * u);
+  if (scene === 'crime'){ ctx.fillStyle = '#ffd60a'; ctx.fillRect(0, 11.5 * u, W, 4 * u); ctx.fillStyle = '#111'; ctx.font = '900 ' + (2.4 * u) + 'px Arial'; ctx.fillText('CRIME SCENE • DO NOT CROSS • CRIME SCENE • DO NOT CROSS', 2 * u, 13.6 * u); }
+  /* mic flag in crew mode */
+  if (crewMode){
+    var mw = 9 * u, mx = W / 2 - mw / 2, my = H - 42 * u;
+    ctx.fillStyle = '#0a1230'; rr(ctx, mx, my, mw, mw, 1.4 * u); ctx.fill();
+    ctx.strokeStyle = '#ffd60a'; ctx.lineWidth = 0.35 * u; rr(ctx, mx, my, mw, mw, 1.4 * u); ctx.stroke();
+    ctx.fillStyle = '#fff'; ctx.font = '900 ' + (3 * u) + 'px Arial'; ctx.textAlign = 'center';
+    ctx.fillText(chanShort(), W / 2, my + mw / 2 + 0.2 * u); ctx.textAlign = 'left';
+    ctx.fillStyle = '#222'; ctx.fillRect(W / 2 - 0.4 * u, my + mw, 0.8 * u, 5 * u);
+  }
+  /* scene tag */
+  ctx.font = '900 ' + (2.1 * u) + 'px Arial';
+  var tag = $('scenetag').textContent, tagw = ctx.measureText(tag).width + 2.4 * u;
+  var ly = H - 26 * u;
+  ctx.fillStyle = '#ffd60a'; rr(ctx, 1 * u, ly - 5.4 * u, tagw, 4.4 * u, 0.6 * u); ctx.fill();
+  ctx.fillStyle = '#111'; ctx.fillText(tag, 2.2 * u, ly - 3.1 * u);
+  /* lower third */
+  ctx.font = '900 ' + (3 * u) + 'px Arial';
+  var bw = ctx.measureText(d.breaking).width + 3 * u;
+  ctx.fillStyle = '#e01f26'; ctx.fillRect(1 * u, ly, bw, 5.6 * u);
+  ctx.fillStyle = '#fff'; ctx.fillText(d.breaking, 2.5 * u, ly + 2.9 * u);
+  ctx.fillStyle = '#f5f7ff'; ctx.fillRect(1 * u + bw, ly, W - 2 * u - bw, 5.6 * u);
+  ctx.fillStyle = '#12235c'; ctx.font = '800 ' + (2.4 * u) + 'px Arial';
+  ctx.fillText($('loc').textContent, 1 * u + bw + 1.6 * u, ly + 2.9 * u);
+  ctx.fillStyle = 'rgba(6,10,26,.9)'; ctx.fillRect(1 * u, ly + 5.6 * u, W - 2 * u, 8.6 * u);
+  ctx.fillStyle = '#ffd60a'; ctx.fillRect(1 * u, ly + 5.6 * u, 0.7 * u, 8.6 * u);
+  ctx.fillStyle = '#fff'; ctx.font = '800 ' + (3.1 * u) + 'px Arial';
+  var hl = $('headline').textContent;
+  while (ctx.measureText(hl).width > W - 5 * u && hl.length > 4) hl = hl.slice(0, -1);
+  ctx.fillText(hl, 2.6 * u, ly + 8.6 * u);
+  ctx.fillStyle = '#ffd60a'; ctx.font = '700 ' + (2.2 * u) + 'px Arial';
+  ctx.fillText($('reporter').textContent, 2.6 * u, ly + 12.4 * u);
+  /* ticker (scrolls with wall time) */
+  ctx.fillStyle = '#0a1230'; ctx.fillRect(0, H - 6.4 * u, W, 6.4 * u);
+  ctx.fillStyle = '#e01f26'; ctx.fillRect(0, H - 6.4 * u, W, 0.5 * u);
+  ctx.fillStyle = '#eef2ff'; ctx.font = '600 ' + (2.3 * u) + 'px Arial';
+  var ttxt = d.ticker, tw = ctx.measureText(ttxt).width, off = (Date.now() / 14) % (tw + 8 * u);
+  ctx.save(); ctx.beginPath(); ctx.rect(13 * u, H - 6.4 * u, W - 13 * u, 6.4 * u); ctx.clip();
+  ctx.fillText(ttxt, 14.5 * u - off, H - 3.1 * u);
+  ctx.fillText(ttxt, 14.5 * u - off + tw + 8 * u, H - 3.1 * u);
+  ctx.restore();
+  ctx.fillStyle = '#ffd60a'; ctx.fillRect(0, H - 6.4 * u, 13 * u, 6.4 * u);
+  ctx.fillStyle = '#111'; ctx.font = '900 ' + (2.2 * u) + 'px Arial';
+  ctx.fillText(d.tickerLbl, 1.4 * u, H - 3.1 * u);
+  rec.raf = requestAnimationFrame(drawRecFrame);
+}
+function startRec(){
+  var v = $('vid');
+  if (!v.videoWidth){ showErr('Camera is still warming up — give it a second and tap again.'); return; }
+  if (!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream){
+    showErr('Video recording is not supported in this browser. On an iPhone, open this page in Safari and it will work.');
+    return;
+  }
+  var W = Math.min(v.videoWidth, 1280), H = Math.round(W * v.videoHeight / v.videoWidth);
+  rec.cv = document.createElement('canvas'); rec.cv.width = W; rec.cv.height = H;
+  rec.ctx = rec.cv.getContext('2d');
+  var cs = rec.cv.captureStream(30);
+  var tracks = cs.getVideoTracks().slice();
+  var hasMic = false;
+  if (stream){ var at = stream.getAudioTracks(); if (at && at.length){ tracks.push(at[0]); hasMic = true; } }
+  var ms = new MediaStream(tracks);
+  var mts = ['video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm'];
+  var mt = null;
+  for (var i = 0; i < mts.length; i++){ try { if (MediaRecorder.isTypeSupported(mts[i])){ mt = mts[i]; break; } } catch(e){} }
+  try { rec.mr = new MediaRecorder(ms, mt ? { mimeType: mt, videoBitsPerSecond: 6000000 } : undefined); }
+  catch(e){ showErr('The recorder would not start in this browser.'); return; }
+  rec.chunks = [];
+  rec.mr.ondataavailable = function(e){ if (e.data && e.data.size) rec.chunks.push(e.data); };
+  rec.mr.onstop = finishRec;
+  rec.startTs = Date.now();
+  rec.mr.start(250);
+  drawRecFrame();
+  $('btnRec').classList.add('recording');
+  $('btnFlip').disabled = true;
+  if (!hasMic) showErr('Recording — but no microphone was allowed, so this clip will be silent. The 📸 pictures still work.');
+}
+function finishRec(){
+  cancelAnimationFrame(rec.raf);
+  var type = (rec.mr && rec.mr.mimeType) || 'video/webm';
+  var blob = new Blob(rec.chunks, { type: type });
+  var ext = type.indexOf('mp4') >= 0 ? 'mp4' : 'webm';
+  lastMedia = { kind:'video', blob: blob, name:'breaking-news.' + ext };
+  $('saveTitle').textContent = '🎬 Your news clip';
+  $('shotImg').classList.add('hidden');
+  var sv = $('shotVid'); sv.classList.remove('hidden'); sv.src = URL.createObjectURL(blob);
+  $('savePhoto').classList.remove('hidden');
+  $('btnRec').classList.remove('recording'); $('btnRec').textContent = '🔴 RECORD';
+  $('btnFlip').disabled = false;
+  rec.mr = null;
+}
+$('btnRec').onclick = function(){
+  if (rec.mr && rec.mr.state === 'recording'){ rec.mr.stop(); return; }
+  startRec();
+};
+$('btnShare').onclick = async function(){
+  var m = lastMedia || (shotBlob ? { kind:'photo', blob: shotBlob, name:'breaking-news.jpg' } : null);
+  if (!m) return;
+  try{
+    if (navigator.canShare){
+      var f = new File([m.blob], m.name, { type: m.blob.type || (m.kind === 'video' ? 'video/mp4' : 'image/jpeg') });
+      if (navigator.canShare({ files:[f] })){ await navigator.share({ files:[f], title:'Breaking News' }); return; }
+    }
+    var a = document.createElement('a'); a.href = URL.createObjectURL(m.blob); a.download = m.name; a.click();
+  }catch(e){}
+};
 
 buildLangRows();
 applyLang();
