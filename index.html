@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" data-build="news-20261108-1645">
+<html lang="en" data-build="news-20261108-1655">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>Breaking News Camera — Totally Real News</title>
+<title>Newsline — Breaking News Camera</title>
 <meta name="theme-color" content="#0b1020">
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -37,13 +37,13 @@
   #intro .b4 { top:82%; background:#e01f26; animation:sweep .5s .42s ease-out forwards; }
   @keyframes sweep { from { transform:translateX(-70%) skewY(-6deg); opacity:0; } to { transform:translateX(0) skewY(-6deg); opacity:1; } }
   #intro .ring { position:absolute; width:130vmin; height:130vmin; border:3px solid rgba(120,160,255,.35); border-radius:50%; animation:ringspin 7s linear infinite; }
-  #intro .ring:before { content:''; position:absolute; inset:12%; border:2px dashed rgba(255,214,10,.5); border-radius:50%; }
+  #intro .ring:before { content:''; position:absolute; inset:12%; border:2px solid rgba(255,255,255,.16); border-radius:50%; }
   @keyframes ringspin { to { transform:rotate(360deg); } }
   #introTxt { position:relative; z-index:2; text-align:center; padding:0 16px; }
-  #introBreaking { font-size:13.5vw; font-weight:900; letter-spacing:1px; line-height:.98; color:#fff; text-shadow:0 6px 0 #e01f26, 0 14px 44px rgba(0,0,0,.7); opacity:0; transform:scale(2.4); }
+  #introBreaking { font-size:13.5vw; font-weight:900; letter-spacing:2px; line-height:.98; color:#fff; text-shadow:0 4px 0 #c8102e, 0 14px 44px rgba(0,0,0,.7); opacity:0; transform:scale(1.18); }
   #introBreaking.slam { animation:slam .45s .55s cubic-bezier(.2,1.4,.4,1) forwards; }
   @keyframes slam { to { opacity:1; transform:scale(1); } }
-  #introChan { margin-top:14px; font-size:5.4vw; font-weight:800; letter-spacing:4px; color:#ffd60a; opacity:0; }
+  #introChan { margin-top:14px; font-size:5.4vw; font-weight:800; letter-spacing:6px; color:#fff; opacity:0; }
   #introChan.slam { animation:fadeup .4s 1.05s ease-out forwards; }
   @keyframes fadeup { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
   @media (min-width:700px){ #introBreaking{ font-size:92px; } #introChan{ font-size:34px; } }
@@ -68,22 +68,22 @@
   .vurow { height:7px; background:#1c2447; border-radius:3px; margin:3px 0; overflow:hidden; }
   .vurow i { display:block; height:100%; width:20%; background:linear-gradient(90deg,#37d67a 55%,#ffd60a 78%,#ff5147 96%); transition:width .09s; }
   #tape { position:absolute; top:calc(96px + env(safe-area-inset-top)); left:-4%; width:108%; z-index:11; background:#ffd60a; color:#111; font-weight:900; font-size:14.5px; letter-spacing:1.5px; text-align:center; padding:6px 0; transform:rotate(-1.4deg); box-shadow:0 6px 18px rgba(0,0,0,.45); white-space:nowrap; overflow:hidden; }
-  #scenetag { display:inline-block; background:#ffd60a; color:#111; font-weight:900; font-size:13px; letter-spacing:1.6px; padding:4px 10px; border-radius:6px 6px 0 0; margin-bottom:5px; box-shadow:0 4px 12px rgba(0,0,0,.4); }
+  #scenetag { display:inline-block; background:#fff; color:#0a1e42; font-weight:900; font-size:13px; letter-spacing:1.6px; padding:4px 10px; border-radius:6px 6px 0 0; margin-bottom:5px; box-shadow:0 4px 12px rgba(0,0,0,.4); }
   #micflag { position:absolute; left:50%; bottom:238px; transform:translateX(-50%); z-index:10; text-align:center; pointer-events:none; }
-  #micflag .cube { width:76px; height:76px; margin:0 auto; background:linear-gradient(145deg,#1a2a63,#0a1230); border:2.5px solid #ffd60a; border-radius:14px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:24px; letter-spacing:1px; color:#fff; box-shadow:0 12px 30px rgba(0,0,0,.55); }
+  #micflag .cube { width:76px; height:76px; margin:0 auto; background:linear-gradient(145deg,#ffffff,#dfe6f5); border:2.5px solid #0a1e42; color:#0a1e42; font-size:13px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:24px; letter-spacing:1px; color:#fff; box-shadow:0 12px 30px rgba(0,0,0,.55); }
   #micflag .stick { width:7px; height:44px; background:#222; margin:0 auto; border-radius:3px; }
   .scenerow { display:flex; gap:8px; flex-wrap:wrap; }
   .scenebtn { background:#1a2450; color:#dbe4ff; border:1.5px solid #33448a; border-radius:999px; padding:9px 13px; font-size:14px; font-weight:700; cursor:pointer; }
   .scenebtn.on { background:#ffd60a; color:#141414; border-color:#ffd60a; }
-  #chanbug { position:absolute; top:calc(52px + env(safe-area-inset-top)); right:12px; z-index:10; background:rgba(5,8,20,.72); border:1px solid rgba(255,214,10,.6); color:#ffd60a; border-radius:7px; padding:4px 10px; font-weight:900; font-size:13px; letter-spacing:2px; }
+  #chanbug { position:absolute; top:calc(52px + env(safe-area-inset-top)); right:12px; z-index:10; background:rgba(5,8,20,.72); border:1px solid rgba(255,255,255,.45); color:#fff; border-radius:7px; padding:4px 10px; font-weight:900; font-size:13px; letter-spacing:2px; }
   #lower { position:absolute; left:0; right:0; bottom:64px; z-index:10; padding:0 10px; pointer-events:none; }
   #lower .row1 { display:flex; align-items:stretch; gap:0; filter:drop-shadow(0 6px 18px rgba(0,0,0,.5)); }
-  #brk { background:#e01f26; color:#fff; font-weight:900; font-size:19px; letter-spacing:.6px; padding:10px 14px; display:flex; align-items:center; white-space:nowrap; border-radius:8px 0 0 0; }
+  #brk { background:#c8102e; color:#fff; font-weight:900; font-size:19px; letter-spacing:.6px; padding:10px 14px; display:flex; align-items:center; white-space:nowrap; border-radius:8px 0 0 0; }
   #loc { background:#f5f7ff; color:#12235c; font-weight:800; font-size:15.5px; padding:10px 14px; display:flex; align-items:center; flex:1; border-radius:0 8px 0 0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
-  #headline { background:rgba(6,10,26,.88); color:#fff; font-weight:800; font-size:21px; line-height:1.2; padding:11px 14px; border-left:6px solid #ffd60a; }
-  #reporter { background:rgba(6,10,26,.88); color:#ffd60a; font-weight:700; font-size:14.5px; padding:0 14px 10px; border-left:6px solid #ffd60a; }
+  #headline { background:rgba(6,10,26,.9); color:#fff; font-weight:800; font-size:21px; line-height:1.2; padding:11px 14px; border-left:6px solid #c8102e; }
+  #reporter { background:rgba(6,10,26,.9); color:#d7e1f9; font-weight:700; font-size:14.5px; padding:0 14px 10px; border-left:6px solid #ffd60a; }
   #tickerwrap { position:absolute; left:0; right:0; bottom:0; height:40px; z-index:10; background:#0a1230; border-top:3px solid #e01f26; display:flex; align-items:center; overflow:hidden; }
-  #tickerlbl { background:#ffd60a; color:#111; font-weight:900; font-size:13.5px; letter-spacing:1px; padding:0 10px; height:100%; display:flex; align-items:center; white-space:nowrap; z-index:2; }
+  #tickerlbl { background:#c8102e; color:#fff; font-weight:900; font-size:13.5px; letter-spacing:1px; padding:0 10px; height:100%; display:flex; align-items:center; white-space:nowrap; z-index:2; }
   #ticker { white-space:nowrap; font-size:15.5px; font-weight:600; color:#eef2ff; will-change:transform; }
   #ticker span { padding-right:64px; }
 
@@ -114,33 +114,33 @@
   <div id="overlay" class="hidden">
     <div id="livebug"><span class="dot"></span><span id="liveTxt">LIVE</span></div>
     <div id="clockbug">--:--:--</div>
-    <div id="chanbug">TRN</div>
+    <div id="chanbug">NEWSLINE</div>
     <div class="vf tl"></div><div class="vf tr"></div><div class="vf bl"></div><div class="vf br"></div>
     <div id="tcbug"><b>● REC</b> <span id="tc">TC 00:00:00:00</span></div>
     <div id="satbug">📡 SAT UPLINK ▂▄▆█</div>
     <div id="vu"><div class="vurow"><i id="vu1"></i></div><div class="vurow"><i id="vu2"></i></div><div class="vulbl">AUDIO</div></div>
     <div id="tape" class="hidden"></div>
-    <div id="micflag" class="hidden"><div class="cube" id="micCube">TRN</div><div class="stick"></div></div>
+    <div id="micflag" class="hidden"><div class="cube" id="micCube">NEWSLINE</div><div class="stick"></div></div>
     <div id="lower">
-      <div><span id="scenetag">📍 LIVE ON THE SCENE</span></div>
+      <div><span id="scenetag">LIVE ON THE SCENE</span></div>
       <div class="row1"><div id="brk">BREAKING NEWS</div><div id="loc">ORLANDO</div></div>
-      <div id="headline">LOCAL DAD DECLARES HIMSELF KING OF THE REMOTE</div>
+      <div id="headline">LIVE COVERAGE FROM THE SCENE</div>
       <div id="reporter">Reporting live: Jeremy Levin</div>
     </div>
     <div id="tickerwrap"><div id="tickerlbl">LATEST</div><div id="ticker"></div></div>
     <div id="controls">
-      <button class="cbtn" id="btnDice" title="Random headline">🎲</button>
-      <button class="cbtn" id="snap">📸 PHOTO</button>
-      <button class="cbtn" id="btnRec">🔴 RECORD</button>
-      <button class="cbtn" id="btnFlip" title="Flip camera">🔄</button>
-      <button class="cbtn" id="btnEdit">⚙️ EDIT</button>
-      <button class="cbtn" id="btnCrew">🎤 CREW</button>
+      <button class="cbtn" id="btnDice" title="Sample headlines" style="font-size:12.5px;letter-spacing:1px;">SAMPLE</button>
+      <button class="cbtn" id="snap">PHOTO</button>
+      <button class="cbtn" id="btnRec">● RECORD</button>
+      <button class="cbtn" id="btnFlip" title="Flip camera" style="font-size:12.5px;letter-spacing:1px;">FLIP</button>
+      <button class="cbtn" id="btnEdit">EDIT</button>
+      <button class="cbtn" id="btnCrew">CREW</button>
     </div>
   </div>
 
   <!-- Edit panel -->
   <div id="panel" class="hidden">
-    <h3>⚙️ Newsroom controls</h3>
+    <h3>Newsroom controls</h3>
     <label>Scene</label>
     <div class="scenerow" id="sceneRow"></div>
     <label>Headline</label>
@@ -154,14 +154,14 @@
     <label>Channel</label>
     <input type="text" id="fChan" maxlength="8">
     <div class="row">
-      <button class="cbtn" id="btnReplay">▶️ Replay intro</button>
+      <button class="cbtn" id="btnReplay">Replay intro</button>
       <button class="cbtn" id="btnDone" style="background:#e01f26;border-color:#ff7a72;">DONE</button>
     </div>
   </div>
 
   <!-- Save photo -->
   <div id="savePhoto" class="hidden">
-    <div style="font-weight:900;font-size:19px;" id="saveTitle">📸 Your news photo</div>
+    <div style="font-weight:900;font-size:19px;" id="saveTitle">Your photo</div>
     <img id="shotImg" alt="Your breaking news photo">
     <video id="shotVid" class="hidden" controls playsinline></video>
     <div style="color:#b9c4e4;font-size:14px;">On a phone: press &amp; hold the photo to save it — or tap Share.</div>
@@ -175,15 +175,15 @@
   <div id="intro" class="hidden">
     <div class="ring"></div>
     <div class="bars"><div class="bar b1"></div><div class="bar b2"></div><div class="bar b3"></div><div class="bar b4"></div></div>
-    <div id="introTxt"><div id="introBreaking">BREAKING NEWS</div><div id="introChan">TOTALLY REAL NEWS</div></div>
+    <div id="introTxt"><div id="introBreaking">BREAKING NEWS</div><div id="introChan">NEWSLINE</div></div>
   </div>
 
   <!-- Start -->
   <div id="start">
-    <div><span class="globe">🌐</span></div>
+    <div style="font-size:15px;font-weight:900;letter-spacing:6px;color:#fff;">NEWS<span style="color:#e01f26;">LINE</span></div>
     <h1>BREAKING NEWS<br><span class="red">CAMERA</span></h1>
-    <p>Pull out your phone, hit GO LIVE, and become the news. A dramatic breaking-news intro plays, then your camera goes live with the full news graphic.</p>
-    <button id="goLive">🔴 GO LIVE</button>
+    <p>Broadcast-quality live graphics on your phone. Tap GO LIVE for the network intro, then your camera goes live on scene with a full professional news package — lower third, ticker, timecode and recording.</p>
+    <button id="goLive">● GO LIVE</button>
     <p style="font-size:12.5px;color:#63749f;">Your camera stays on your phone — nothing is uploaded anywhere.</p>
   </div>
 
@@ -197,10 +197,10 @@
 var $ = function(id){ return document.getElementById(id); };
 
 var LANGS = {
-  en: { name:'English', flag:'🇺🇸', live:'LIVE', breaking:'BREAKING NEWS', chan:'TOTALLY REAL NEWS', from:'LIVE FROM', rep:'Reporting live', tickerLbl:'LATEST', loc:'ORLANDO, FL',
+  en: { name:'English', flag:'🇺🇸', live:'LIVE', breaking:'BREAKING NEWS', chan:'NEWSLINE', from:'LIVE FROM', rep:'Reporting live', tickerLbl:'LATEST', loc:'ORLANDO, FL',
     speak:'en-US', speakTxt:'Breaking news!',
-    headlines:['LOCAL DAD DECLARES HIMSELF KING OF THE REMOTE','MAN BUYS MILK, RETURNS HOME A HERO','AREA BOY DECLARES BROCCOLI "NOT A FOOD"','DOG ELECTED MAYOR IN LANDSLIDE, AGAIN','LOCAL HERO FINDS TV REMOTE IN UNDER 3 MINUTES'],
-    ticker:'TRAFFIC ON I-4 STILL JUST TRAFFIC +++ WEATHER: FLORIDA. JUST FLORIDA +++ EXPERTS CONFIRM MONDAY IS STILL THE WORST +++' },
+    headlines:['CREWS RESPOND TO INCIDENT ON I-4, DELAYS EXPECTED','CITY COUNCIL APPROVES NEW DEVELOPMENT PLAN','SEVERE WEATHER MOVES THROUGH CENTRAL FLORIDA','COMMUNITY GATHERS DOWNTOWN FOR ANNUAL FESTIVAL','OFFICIALS GIVE UPDATE ON OVERNIGHT STORM DAMAGE'],
+    ticker:'TRAFFIC ALERT: DELAYS ON I-4 WESTBOUND NEAR DOWNTOWN +++ WEATHER: CLEAR SKIES ACROSS CENTRAL FLORIDA, HIGH 87 +++ MARKETS: DOW CLOSES UP 0.4% +++ LOTTERY: TONIGHT\'S JACKPOT REACHES $210 MILLION +++' },
 };
 
 var lang = 'en';
@@ -243,7 +243,7 @@ function reporterName(){
 }
 function chanShort(){
   var v = ($('fChan').value || '').trim().toUpperCase();
-  return v || 'TRN';
+  return v || 'NEWSLINE';
 }
 function setTicker(t){
   $('ticker').innerHTML = '<span>' + t + '</span><span>' + t + '</span>';
@@ -464,7 +464,7 @@ $('snap').onclick = function(){
   ctx.fillText(L().ticker, 14.5 * u, H - 3.1 * u);
   cv.toBlob(function(blob){
     shotBlob = blob; lastMedia = { kind:'photo', blob: blob, name:'breaking-news.jpg' };
-    $('saveTitle').textContent = '📸 Your news photo';
+    $('saveTitle').textContent = 'Your photo';
     $('shotVid').classList.add('hidden'); $('shotImg').classList.remove('hidden');
     $('shotImg').src = URL.createObjectURL(blob);
     $('savePhoto').classList.remove('hidden');
@@ -483,11 +483,11 @@ $('btnShare').onclick = async function(){
 
 /* ---- Scenes + crew mode ---- */
 var SCENES = {
-  scene:  { tag:'📍 LIVE ON THE SCENE', tape:false },
-  crime:  { tag:'🚨 CRIME SCENE', tape:true },
-  storm:  { tag:'🌪️ STORM COVERAGE — 87° • WIND 40 MPH', tape:false },
-  party:  { tag:'🎉 BIG EVENT', tape:false },
-  sports: { tag:'🏈 GAME DAY', tape:false }
+  scene:  { tag:'LIVE ON THE SCENE', tape:false },
+  crime:  { tag:'CRIME SCENE', tape:true },
+  storm:  { tag:'STORM COVERAGE — 87° • WIND 40 MPH', tape:false },
+  party:  { tag:'COMMUNITY EVENT', tape:false },
+  sports: { tag:'GAME DAY', tape:false }
 };
 var scene = 'scene', crewMode = false;
 function setScene(k){
@@ -504,7 +504,7 @@ function setScene(k){
 }
 (function buildScenes(){
   var row = $('sceneRow'); if (!row) return;
-  var names = { scene:'📍 On the Scene', crime:'🚨 Crime Scene', storm:'🌪️ Storm', party:'🎉 Big Event', sports:'🏈 Game Day' };
+  var names = { scene:'On the Scene', crime:'Crime Scene', storm:'Storm Coverage', party:'Community Event', sports:'Game Day' };
   Object.keys(SCENES).forEach(function(k){
     var b = document.createElement('button');
     b.className = 'scenebtn' + (k === scene ? ' on' : '');
@@ -518,7 +518,7 @@ $('btnCrew').onclick = async function(){
   $('micflag').classList.toggle('hidden', !crewMode);
   $('micCube').textContent = chanShort();
   if (crewMode){
-    $('reporter').textContent = reporterName() + ' • Eyewitness News • LIVE on scene';
+    $('reporter').textContent = reporterName() + ' • Reporting live on scene';
     if (facing !== 'user'){ facing = 'user'; await startCamera(); }
   } else {
     $('reporter').textContent = L().rep + ': ' + reporterName();
@@ -553,7 +553,7 @@ function drawRecFrame(){
   if (crewMode){
     var mw = 9 * u, mx = W / 2 - mw / 2, my = H - 42 * u;
     ctx.fillStyle = '#0a1230'; rr(ctx, mx, my, mw, mw, 1.4 * u); ctx.fill();
-    ctx.strokeStyle = '#ffd60a'; ctx.lineWidth = 0.35 * u; rr(ctx, mx, my, mw, mw, 1.4 * u); ctx.stroke();
+    ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 0.35 * u; rr(ctx, mx, my, mw, mw, 1.4 * u); ctx.stroke();
     ctx.fillStyle = '#fff'; ctx.font = '900 ' + (3 * u) + 'px Arial'; ctx.textAlign = 'center';
     ctx.fillText(chanShort(), W / 2, my + mw / 2 + 0.2 * u); ctx.textAlign = 'left';
     ctx.fillStyle = '#222'; ctx.fillRect(W / 2 - 0.4 * u, my + mw, 0.8 * u, 5 * u);
@@ -562,8 +562,8 @@ function drawRecFrame(){
   ctx.font = '900 ' + (2.1 * u) + 'px Arial';
   var tag = $('scenetag').textContent, tagw = ctx.measureText(tag).width + 2.4 * u;
   var ly = H - 26 * u;
-  ctx.fillStyle = '#ffd60a'; rr(ctx, 1 * u, ly - 5.4 * u, tagw, 4.4 * u, 0.6 * u); ctx.fill();
-  ctx.fillStyle = '#111'; ctx.fillText(tag, 2.2 * u, ly - 3.1 * u);
+  ctx.fillStyle = '#ffffff'; rr(ctx, 1 * u, ly - 5.4 * u, tagw, 4.4 * u, 0.6 * u); ctx.fill();
+  ctx.fillStyle = '#0a1e42'; ctx.fillText(tag, 2.2 * u, ly - 3.1 * u);
   /* lower third */
   ctx.font = '900 ' + (3 * u) + 'px Arial';
   var bw = ctx.measureText(d.breaking).width + 3 * u;
@@ -622,7 +622,7 @@ function startRec(){
   drawRecFrame();
   $('btnRec').classList.add('recording');
   $('btnFlip').disabled = true;
-  if (!hasMic) showErr('Recording — but no microphone was allowed, so this clip will be silent. The 📸 pictures still work.');
+  if (!hasMic) showErr('Recording — but no microphone was allowed, so this clip will be silent. Photos still work.');
 }
 function finishRec(){
   cancelAnimationFrame(rec.raf);
@@ -630,11 +630,11 @@ function finishRec(){
   var blob = new Blob(rec.chunks, { type: type });
   var ext = type.indexOf('mp4') >= 0 ? 'mp4' : 'webm';
   lastMedia = { kind:'video', blob: blob, name:'breaking-news.' + ext };
-  $('saveTitle').textContent = '🎬 Your news clip';
+  $('saveTitle').textContent = 'Your video clip';
   $('shotImg').classList.add('hidden');
   var sv = $('shotVid'); sv.classList.remove('hidden'); sv.src = URL.createObjectURL(blob);
   $('savePhoto').classList.remove('hidden');
-  $('btnRec').classList.remove('recording'); $('btnRec').textContent = '🔴 RECORD';
+  $('btnRec').classList.remove('recording'); $('btnRec').textContent = '● RECORD';
   $('btnFlip').disabled = false;
   rec.mr = null;
 }
