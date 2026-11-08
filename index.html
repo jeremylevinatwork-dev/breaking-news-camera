@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-build="news-20261108-1758">
+<html lang="en" data-build="news-20261108-1806">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
@@ -243,9 +243,9 @@
     <div style="font-weight:900;font-size:19px;" id="saveTitle">Your photo</div>
     <img id="shotImg" alt="Your breaking news photo">
     <video id="shotVid" class="hidden" controls playsinline></video>
-    <div style="color:#b9c4e4;font-size:14px;">On a phone: press &amp; hold the photo to save it — or tap Share.</div>
+    <div id="saveHint" style="color:#b9c4e4;font-size:14px;">Tap SAVE TO CAMERA ROLL — it goes into your Photos app.</div>
     <div style="display:flex;gap:10px;">
-      <button class="cbtn" id="btnShare">Share</button>
+      <button class="cbtn" id="btnShare" style="background:#c8102e;border-color:rgba(255,255,255,.35);font-size:14px;font-weight:700;padding:11px 18px;">SAVE TO CAMERA ROLL</button>
       <button class="cbtn" id="btnBack" style="background:#c8102e;border-color:rgba(255,255,255,.35);">Back to LIVE</button>
     </div>
   </div>
@@ -693,6 +693,7 @@ $('snap').onclick = function(){
   cv.toBlob(function(blob){
     shotBlob = blob; lastMedia = { kind:'photo', blob: blob, name:'breaking-news.jpg' };
     $('saveTitle').textContent = 'Your photo';
+    var sh2 = $('saveHint'); if (sh2) sh2.textContent = 'Tap SAVE TO CAMERA ROLL, then tap Save Image — or press & hold the photo.';
     $('shotVid').classList.add('hidden'); $('shotImg').classList.remove('hidden');
     $('shotImg').src = URL.createObjectURL(blob);
     $('savePhoto').classList.remove('hidden');
@@ -898,6 +899,7 @@ function finishRec(){
   var ext = type.indexOf('mp4') >= 0 ? 'mp4' : 'webm';
   lastMedia = { kind:'video', blob: blob, name:'breaking-news.' + ext };
   $('saveTitle').textContent = 'Your video clip';
+  var sh1 = $('saveHint'); if (sh1) sh1.textContent = 'Tap SAVE TO CAMERA ROLL, then tap Save Video — it lands in your Photos.';
   $('shotImg').classList.add('hidden');
   var sv = $('shotVid'); sv.classList.remove('hidden'); sv.src = URL.createObjectURL(blob);
   $('savePhoto').classList.remove('hidden');
