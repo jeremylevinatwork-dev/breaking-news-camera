@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-build="news-20261108-1655">
+<html lang="en" data-build="news-20261108-1705">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
@@ -40,13 +40,12 @@
   #intro .ring:before { content:''; position:absolute; inset:12%; border:2px solid rgba(255,255,255,.16); border-radius:50%; }
   @keyframes ringspin { to { transform:rotate(360deg); } }
   #introTxt { position:relative; z-index:2; text-align:center; padding:0 16px; }
-  #introBreaking { font-size:13.5vw; font-weight:900; letter-spacing:2px; line-height:.98; color:#fff; text-shadow:0 4px 0 #c8102e, 0 14px 44px rgba(0,0,0,.7); opacity:0; transform:scale(1.18); }
+  #introBreaking { font-size:11vmin; font-weight:900; letter-spacing:2px; line-height:.98; color:#fff; text-shadow:0 4px 0 #c8102e, 0 14px 44px rgba(0,0,0,.7); opacity:0; transform:scale(1.18); }
   #introBreaking.slam { animation:slam .45s .55s cubic-bezier(.2,1.4,.4,1) forwards; }
   @keyframes slam { to { opacity:1; transform:scale(1); } }
-  #introChan { margin-top:14px; font-size:5.4vw; font-weight:800; letter-spacing:6px; color:#fff; opacity:0; }
+  #introChan { margin-top:14px; font-size:4.2vmin; font-weight:800; letter-spacing:6px; color:#fff; opacity:0; }
   #introChan.slam { animation:fadeup .4s 1.05s ease-out forwards; }
   @keyframes fadeup { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
-  @media (min-width:700px){ #introBreaking{ font-size:92px; } #introChan{ font-size:34px; } }
 
   /* ===== Live overlay ===== */
   #livebug { position:absolute; top:calc(10px + env(safe-area-inset-top)); left:12px; z-index:10; display:flex; align-items:center; gap:7px; background:#e01f26; border-radius:7px; padding:6px 12px; font-weight:900; font-size:16.5px; letter-spacing:1.5px; box-shadow:0 4px 16px rgba(0,0,0,.45); }
@@ -58,37 +57,38 @@
   .vf { position:absolute; width:34px; height:34px; z-index:9; border:0 solid rgba(255,255,255,.75); pointer-events:none; }
   .vf.tl { top:calc(46px + env(safe-area-inset-top)); left:10px; border-top-width:3px; border-left-width:3px; border-top-left-radius:8px; }
   .vf.tr { top:calc(46px + env(safe-area-inset-top)); right:10px; border-top-width:3px; border-right-width:3px; border-top-right-radius:8px; }
-  .vf.bl { bottom:118px; left:10px; border-bottom-width:3px; border-left-width:3px; border-bottom-left-radius:8px; }
-  .vf.br { bottom:118px; right:10px; border-bottom-width:3px; border-right-width:3px; border-bottom-right-radius:8px; }
+  .vf.bl { bottom:clamp(150px, 30%, 260px); left:10px; border-bottom-width:3px; border-left-width:3px; border-bottom-left-radius:8px; }
+  .vf.br { bottom:clamp(150px, 30%, 260px); right:10px; border-bottom-width:3px; border-right-width:3px; border-bottom-right-radius:8px; }
   #tcbug { position:absolute; top:calc(84px + env(safe-area-inset-top)); right:12px; z-index:10; background:rgba(5,8,20,.72); border:1px solid rgba(255,255,255,.25); border-radius:7px; padding:4px 10px; font-weight:700; font-size:13px; letter-spacing:1px; font-variant-numeric:tabular-nums; color:#cfe0ff; }
   #tcbug b { color:#ff5147; }
   #satbug { position:absolute; top:calc(118px + env(safe-area-inset-top)); right:12px; z-index:10; color:#9fe8a9; font-weight:800; font-size:12px; letter-spacing:1px; text-shadow:0 2px 6px rgba(0,0,0,.8); }
-  #vu { position:absolute; right:12px; bottom:196px; z-index:10; width:86px; background:rgba(5,8,20,.6); border:1px solid rgba(255,255,255,.22); border-radius:8px; padding:6px 8px; }
+  #vu { position:absolute; right:12px; top:calc(150px + env(safe-area-inset-top)); z-index:10; width:86px; background:rgba(5,8,20,.6); border:1px solid rgba(255,255,255,.22); border-radius:8px; padding:6px 8px; }
   #vu .vulbl { font-size:9.5px; font-weight:800; letter-spacing:2px; color:#8fa3d9; margin-top:4px; text-align:center; }
   .vurow { height:7px; background:#1c2447; border-radius:3px; margin:3px 0; overflow:hidden; }
   .vurow i { display:block; height:100%; width:20%; background:linear-gradient(90deg,#37d67a 55%,#ffd60a 78%,#ff5147 96%); transition:width .09s; }
   #tape { position:absolute; top:calc(96px + env(safe-area-inset-top)); left:-4%; width:108%; z-index:11; background:#ffd60a; color:#111; font-weight:900; font-size:14.5px; letter-spacing:1.5px; text-align:center; padding:6px 0; transform:rotate(-1.4deg); box-shadow:0 6px 18px rgba(0,0,0,.45); white-space:nowrap; overflow:hidden; }
   #scenetag { display:inline-block; background:#fff; color:#0a1e42; font-weight:900; font-size:13px; letter-spacing:1.6px; padding:4px 10px; border-radius:6px 6px 0 0; margin-bottom:5px; box-shadow:0 4px 12px rgba(0,0,0,.4); }
-  #micflag { position:absolute; left:50%; bottom:238px; transform:translateX(-50%); z-index:10; text-align:center; pointer-events:none; }
+  #micflag { position:absolute; left:50%; top:36%; transform:translate(-50%,-50%); z-index:10; text-align:center; pointer-events:none; }
   #micflag .cube { width:76px; height:76px; margin:0 auto; background:linear-gradient(145deg,#ffffff,#dfe6f5); border:2.5px solid #0a1e42; color:#0a1e42; font-size:13px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:24px; letter-spacing:1px; color:#fff; box-shadow:0 12px 30px rgba(0,0,0,.55); }
   #micflag .stick { width:7px; height:44px; background:#222; margin:0 auto; border-radius:3px; }
   .scenerow { display:flex; gap:8px; flex-wrap:wrap; }
   .scenebtn { background:#1a2450; color:#dbe4ff; border:1.5px solid #33448a; border-radius:999px; padding:9px 13px; font-size:14px; font-weight:700; cursor:pointer; }
   .scenebtn.on { background:#ffd60a; color:#141414; border-color:#ffd60a; }
   #chanbug { position:absolute; top:calc(52px + env(safe-area-inset-top)); right:12px; z-index:10; background:rgba(5,8,20,.72); border:1px solid rgba(255,255,255,.45); color:#fff; border-radius:7px; padding:4px 10px; font-weight:900; font-size:13px; letter-spacing:2px; }
-  #lower { position:absolute; left:0; right:0; bottom:64px; z-index:10; padding:0 10px; pointer-events:none; }
+  #bottomstack { position:absolute; left:0; right:0; bottom:0; z-index:10; display:flex; flex-direction:column; }
+  #lower { order:1; padding:0 10px; margin-bottom:6px; pointer-events:none; }
   #lower .row1 { display:flex; align-items:stretch; gap:0; filter:drop-shadow(0 6px 18px rgba(0,0,0,.5)); }
   #brk { background:#c8102e; color:#fff; font-weight:900; font-size:19px; letter-spacing:.6px; padding:10px 14px; display:flex; align-items:center; white-space:nowrap; border-radius:8px 0 0 0; }
   #loc { background:#f5f7ff; color:#12235c; font-weight:800; font-size:15.5px; padding:10px 14px; display:flex; align-items:center; flex:1; border-radius:0 8px 0 0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
   #headline { background:rgba(6,10,26,.9); color:#fff; font-weight:800; font-size:21px; line-height:1.2; padding:11px 14px; border-left:6px solid #c8102e; }
   #reporter { background:rgba(6,10,26,.9); color:#d7e1f9; font-weight:700; font-size:14.5px; padding:0 14px 10px; border-left:6px solid #ffd60a; }
-  #tickerwrap { position:absolute; left:0; right:0; bottom:0; height:40px; z-index:10; background:#0a1230; border-top:3px solid #e01f26; display:flex; align-items:center; overflow:hidden; }
+  #tickerwrap { order:3; position:relative; height:40px; background:#0a1230; border-top:3px solid #e01f26; display:flex; align-items:center; overflow:hidden; }
   #tickerlbl { background:#c8102e; color:#fff; font-weight:900; font-size:13.5px; letter-spacing:1px; padding:0 10px; height:100%; display:flex; align-items:center; white-space:nowrap; z-index:2; }
   #ticker { white-space:nowrap; font-size:15.5px; font-weight:600; color:#eef2ff; will-change:transform; }
   #ticker span { padding-right:64px; }
 
   /* ===== Controls ===== */
-  #controls { position:absolute; left:0; right:0; bottom:52px; z-index:20; display:flex; justify-content:center; gap:10px; padding:0 12px; }
+  #controls { order:2; display:flex; justify-content:center; gap:10px; padding:2px 12px 10px; flex-wrap:wrap; }
   .cbtn { background:rgba(10,16,40,.82); color:#fff; border:1.5px solid rgba(255,255,255,.4); border-radius:999px; padding:11px 16px; font-size:15.5px; font-weight:800; cursor:pointer; backdrop-filter:blur(4px); }
   .cbtn:active { transform:scale(.95); }
   #snap { background:#e01f26; border-color:#ff7a72; font-size:17px; padding:12px 22px; box-shadow:0 8px 24px rgba(224,31,38,.5); }
@@ -102,6 +102,16 @@
   #btnRec { background:#e01f26; border-color:#ff7a72; font-size:17px; padding:12px 20px; box-shadow:0 8px 24px rgba(224,31,38,.5); }
   #btnRec.recording { background:#fff; color:#e01f26; animation:pulse 1.2s ease-in-out infinite; }
   #savePhoto video { max-width:92%; max-height:62%; border-radius:10px; border:2px solid #33448a; background:#000; }
+  @media (max-height: 520px) {
+    #headline { font-size:16px; padding:8px 11px; }
+    #brk, #loc { font-size:13px; padding:7px 10px; }
+    #reporter { font-size:12px; padding-bottom:7px; }
+    #scenetag { font-size:11px; }
+    #vu, #satbug { display:none; }
+    .vf.bl, .vf.br { bottom:128px; }
+    #micflag { top:30%; }
+    #micflag .cube { width:58px; height:58px; }
+  }
   #flash { position:absolute; inset:0; background:#fff; opacity:0; z-index:44; pointer-events:none; }
   #err { position:absolute; left:50%; top:44%; transform:translate(-50%,-50%); z-index:50; background:#2a0f14; border:1.5px solid #e01f26; color:#ffd9d6; border-radius:12px; padding:16px 18px; max-width:86%; font-size:15px; line-height:1.45; text-align:center; }
 </style>
@@ -121,6 +131,7 @@
     <div id="vu"><div class="vurow"><i id="vu1"></i></div><div class="vurow"><i id="vu2"></i></div><div class="vulbl">AUDIO</div></div>
     <div id="tape" class="hidden"></div>
     <div id="micflag" class="hidden"><div class="cube" id="micCube">NEWSLINE</div><div class="stick"></div></div>
+    <div id="bottomstack">
     <div id="lower">
       <div><span id="scenetag">LIVE ON THE SCENE</span></div>
       <div class="row1"><div id="brk">BREAKING NEWS</div><div id="loc">ORLANDO</div></div>
@@ -135,6 +146,7 @@
       <button class="cbtn" id="btnFlip" title="Flip camera" style="font-size:12.5px;letter-spacing:1px;">FLIP</button>
       <button class="cbtn" id="btnEdit">EDIT</button>
       <button class="cbtn" id="btnCrew">CREW</button>
+    </div>
     </div>
   </div>
 
