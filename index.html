@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-build="news-20261108-1617">
+<html lang="en" data-build="news-20261108-1622">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
@@ -107,8 +107,6 @@
   <!-- Edit panel -->
   <div id="panel" class="hidden">
     <h3>⚙️ Newsroom controls</h3>
-    <label>Language / Idioma</label>
-    <div class="langrow" id="langRow2"></div>
     <label>Headline</label>
     <input type="text" id="fHeadline" maxlength="110">
     <label>Location</label>
@@ -147,9 +145,7 @@
   <div id="start">
     <div><span class="globe">🌐</span></div>
     <h1>BREAKING NEWS<br><span class="red">CAMERA</span></h1>
-    <p>Pull out your phone, hit GO LIVE, and become the news. A dramatic breaking-news intro plays, then your camera goes live with the full news graphic — in 8 languages.</p>
-    <div class="lbl">Choose your language</div>
-    <div class="langrow" id="langRow"></div>
+    <p>Pull out your phone, hit GO LIVE, and become the news. A dramatic breaking-news intro plays, then your camera goes live with the full news graphic.</p>
     <button id="goLive">🔴 GO LIVE</button>
     <p style="font-size:12.5px;color:#63749f;">Your camera stays on your phone — nothing is uploaded anywhere.</p>
   </div>
@@ -168,34 +164,6 @@ var LANGS = {
     speak:'en-US', speakTxt:'Breaking news!',
     headlines:['LOCAL DAD DECLARES HIMSELF KING OF THE REMOTE','MAN BUYS MILK, RETURNS HOME A HERO','AREA BOY DECLARES BROCCOLI "NOT A FOOD"','DOG ELECTED MAYOR IN LANDSLIDE, AGAIN','LOCAL HERO FINDS TV REMOTE IN UNDER 3 MINUTES'],
     ticker:'TRAFFIC ON I-4 STILL JUST TRAFFIC +++ WEATHER: FLORIDA. JUST FLORIDA +++ EXPERTS CONFIRM MONDAY IS STILL THE WORST +++' },
-  es: { name:'Español', flag:'🇪🇸', live:'EN VIVO', breaking:'ÚLTIMA HORA', chan:'NOTICIAS DE VERDAD', from:'EN DIRECTO DESDE', rep:'En directo', tickerLbl:'ÚLTIMO', loc:'ORLANDO, FL',
-    speak:'es-ES', speakTxt:'¡Última hora!',
-    headlines:['UN PADRE LOCAL SE DECLARA REY DEL MANDO A DISTANCIA','HOMBRE COMPRA LECHE Y VUELVE COMO UN HÉROE','NIÑO DECLARA QUE EL BRÓCOLI "NO ES COMIDA"','PERRO ELEGIDO ALCALDE POR SEGUNDA VEZ'],
-    ticker:'EL TRÁFICO SIGUE SIENDO TRÁFICO +++ EL TIEMPO: SOL, COMO SIEMPRE +++ LOS EXPERTOS CONFIRMAN QUE HOY ES HOY +++' },
-  fr: { name:'Français', flag:'🇫🇷', live:'EN DIRECT', breaking:'FLASH INFO', chan:'INFOS PRESQUE VRAIES', from:'EN DIRECT DE', rep:'En direct', tickerLbl:'DERNIÈRE', loc:'ORLANDO',
-    speak:'fr-FR', speakTxt:'Flash info !',
-    headlines:['UN PÈRE SE DÉCLARE ROI DE LA TÉLÉCOMMANDE','UN HOMME ACHÈTE DU LAIT ET DEVIENT UN HÉROS','UN ENFANT DÉCLARE QUE LE BROCOLI N\'EST PAS UN ALIMENT'],
-    ticker:'LA CIRCULATION RESTE LA CIRCULATION +++ MÉTÉO : DU SOLEIL, ÉTONNANT +++ LES EXPERTS CONFIRMENT QUE C\'EST BIEN AUJOURD\'HUI +++' },
-  de: { name:'Deutsch', flag:'🇩🇪', live:'LIVE', breaking:'EILMELDUNG', chan:'WIRKLICH ECHTE NEWS', from:'LIVE AUS', rep:'Live vor Ort', tickerLbl:'AKTUELL', loc:'ORLANDO',
-    speak:'de-DE', speakTxt:'Eilmeldung!',
-    headlines:['VATER ERKLÄRT SICH ZUM KÖNIG DER FERNBEDIENUNG','MANN KAUFT MILCH UND KEHRT ALS HELD ZURÜCK','JUNGE ERKLÄRT: BROKKOLI IST KEIN ESSEN'],
-    ticker:'DER VERKEHR IST WEITERHIN VERKEHR +++ WETTER: SONNE, WIE IMMER +++ EXPERTEN BESTÄTIGEN: HEUTE IST HEUTE +++' },
-  it: { name:'Italiano', flag:'🇮🇹', live:'DIRETTA', breaking:"ULTIM'ORA", chan:'NOTIZIE VERISSIME', from:'IN DIRETTA DA', rep:'In diretta', tickerLbl:'ULTIME', loc:'ORLANDO',
-    speak:'it-IT', speakTxt:'Ultim\'ora!',
-    headlines:['PADRE SI DICHIARA RE DEL TELECOMANDO','UOMO COMPRA IL LATTE E TORNA DA EROE','BAMBINO DICHIARA: I BROCCOLI NON SONO CIBO'],
-    ticker:'IL TRAFFICO È SEMPRE TRAFFICO +++ METEO: SOLE, COME SEMPRE +++ GLI ESPERTI CONFERMANO: OGGI È OGGI +++' },
-  pt: { name:'Português', flag:'🇧🇷', live:'AO VIVO', breaking:'URGENTE', chan:'NOTÍCIAS DE VERDADE', from:'AO VIVO DE', rep:'Ao vivo', tickerLbl:'AGORA', loc:'ORLANDO',
-    speak:'pt-BR', speakTxt:'Urgente!',
-    headlines:['PAI SE DECLARA REI DO CONTROLE REMOTO','HOMEM COMPRA LEITE E VOLTA COMO HERÓI','MENINO DECLARA: BRÓCOLIS NÃO É COMIDA'],
-    ticker:'O TRÂNSITO CONTINUA TRÂNSITO +++ TEMPO: SOL, COMO SEMPRE +++ ESPECIALISTAS CONFIRMAM: HOJE É HOJE +++' },
-  ja: { name:'日本語', flag:'🇯🇵', live:'生中継', breaking:'速報', chan:'ほんとニュース', from:'生中継', rep:'現場から', tickerLbl:'最新', loc:'オーランド',
-    speak:'ja-JP', speakTxt:'速報です！',
-    headlines:['お父さん、リモコンの王様を宣言','牛乳を買った男性、英雄として帰宅','男の子「ブロッコリーは食べ物じゃない」'],
-    ticker:'渋滞は今日も渋滞です +++ 天気は晴れ、いつも通り +++ 今日は今日であることを確認 +++' },
-  he: { name:'עברית', flag:'🇮🇱', live:'שידור חי', breaking:'חדשות מתפרצות', chan:'חדשות אמיתיות לגמרי', from:'בשידור חי מ', rep:'מדווח מהשטח', tickerLbl:'עדכון', loc:'אורלנדו',
-    speak:'he-IL', speakTxt:'חדשות מתפרצות!',
-    headlines:['אבא מקומי הכריז על עצמו כמלך השלט','איש קנה חלב וחזר הביתה גיבור','ילד הכריז: ברוקולי זה לא אוכל'],
-    ticker:'הפקקים עדיין פקקים +++ מזג האוויר: שמש, כמו תמיד +++ מומחים מאשרים: היום זה היום +++' }
 };
 
 var lang = 'en';
@@ -208,7 +176,7 @@ function L(){ return LANGS[lang]; }
 
 function buildLangRows(){
   ['langRow','langRow2'].forEach(function(rid){
-    var row = $(rid); row.innerHTML = '';
+    var row = $(rid); if (!row) return; row.innerHTML = '';
     Object.keys(LANGS).forEach(function(k){
       var b = document.createElement('button');
       b.className = 'langbtn' + (k === lang ? ' on' : '');
