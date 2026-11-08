@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-build="news-20261108-1705">
+<html lang="en" data-build="news-20261108-1718">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
@@ -9,7 +9,7 @@
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin:0; padding:0; height:100%; background:#0b1020; color:#fff; font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; overflow:hidden; }
   #stage { position:fixed; inset:0; background:#000; }
-  #vid { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; background:#111; }
+  #vid { position:absolute; left:50%; top:50%; width:100vw; height:100dvh; object-fit:cover; background:#111; transform:translate(-50%,-50%); }
   .hidden { display:none !important; }
 
   /* ===== Start screen ===== */
@@ -144,6 +144,7 @@
       <button class="cbtn" id="snap">PHOTO</button>
       <button class="cbtn" id="btnRec">● RECORD</button>
       <button class="cbtn" id="btnFlip" title="Flip camera" style="font-size:12.5px;letter-spacing:1px;">FLIP</button>
+      <button class="cbtn" id="btnRot" style="font-size:12.5px;letter-spacing:1px;">ROTATE</button>
       <button class="cbtn" id="btnEdit">EDIT</button>
       <button class="cbtn" id="btnCrew">CREW</button>
     </div>
@@ -383,6 +384,35 @@ $('btnFlip').onclick = async function(){
   facing = (facing === 'environment') ? 'user' : 'environment';
   await startCamera();
 };
+
+/* ---- Manual camera rotation (foldables can report a sideways feed) ---- */
+var rot = 0;
+try { rot = parseInt(localStorage.getItem('news-rot') || '0') || 0; } catch(e) {}
+function applyRot(){
+  var v = $('vid');
+  var swap = (rot % 180 !== 0);
+  v.style.width = swap ? '100dvh' : '100vw';
+  v.style.height = swap ? '100vw' : '100dvh';
+  v.style.transform = 'translate(-50%,-50%) rotate(' + rot + 'deg)';
+  try { localStorage.setItem('news-rot', String(rot)); } catch(e) {}
+}
+$('btnRot').onclick = function(){ rot = (rot + 90) % 360; applyRot(); };
+applyRot();
+function drawVideoCover(ctx, v, W, H){
+  var vw = v.videoWidth, vh = v.videoHeight; if (!vw) return;
+  ctx.save();
+  if (rot === 0){
+    var s = Math.max(W / vw, H / vh);
+    ctx.drawImage(v, (W - vw * s) / 2, (H - vh * s) / 2, vw * s, vh * s);
+  } else {
+    ctx.translate(W / 2, H / 2);
+    ctx.rotate(rot * Math.PI / 180);
+    var bw = (rot % 180 === 0) ? W : H, bh = (rot % 180 === 0) ? H : W;
+    var s2 = Math.max(bw / vw, bh / vh);
+    ctx.drawImage(v, -vw * s2 / 2, -vh * s2 / 2, vw * s2, vh * s2);
+  }
+  ctx.restore();
+}
 $('btnDice').onclick = function(){
   var hs = L().headlines;
   $('headline').textContent = hs[Math.floor(Math.random() * hs.length)];
@@ -427,10 +457,11 @@ $('snap').onclick = function(){
   if (!v.videoWidth){ showErr('Camera is still warming up — give it a second and tap again.'); return; }
   var fl = $('flash'); fl.style.transition = 'none'; fl.style.opacity = '0.9';
   setTimeout(function(){ fl.style.transition = 'opacity .45s'; fl.style.opacity = '0'; }, 40);
-  var W = v.videoWidth, H = v.videoHeight;
+  var W = (rot % 180 !== 0) ? v.videoHeight : v.videoWidth;
+  var H = (rot % 180 !== 0) ? v.videoWidth : v.videoHeight;
   var cv = document.createElement('canvas'); cv.width = W; cv.height = H;
   var ctx = cv.getContext('2d');
-  ctx.drawImage(v, 0, 0, W, H);
+  drawVideoCover(ctx, v, W, H);
   var u = Math.max(W, H) / 100; /* scale unit */
   var d = L();
   /* LIVE bug */
@@ -542,8 +573,7 @@ setScene('scene');
 function drawRecFrame(){
   var v = $('vid'); if (!v.videoWidth){ rec.raf = requestAnimationFrame(drawRecFrame); return; }
   var ctx = rec.ctx, W = rec.cv.width, H = rec.cv.height;
-  var vw = v.videoWidth, vh = v.videoHeight, s = Math.max(W / vw, H / vh);
-  ctx.drawImage(v, (W - vw * s) / 2, (H - vh * s) / 2, vw * s, vh * s);
+  drawVideoCover(ctx, v, W, H);
   var u = Math.max(W, H) / 100, d = L();
   ctx.textBaseline = 'middle';
   /* LIVE bug */
@@ -613,7 +643,8 @@ function startRec(){
     showErr('Video recording is not supported in this browser. On an iPhone, open this page in Safari and it will work.');
     return;
   }
-  var W = Math.min(v.videoWidth, 1280), H = Math.round(W * v.videoHeight / v.videoWidth);
+  var swapWH = (rot % 180 !== 0);
+  var W = Math.min(swapWH ? v.videoHeight : v.videoWidth, 1280), H = Math.round(W * (swapWH ? v.videoWidth : v.videoHeight) / (swapWH ? v.videoHeight : v.videoWidth));
   rec.cv = document.createElement('canvas'); rec.cv.width = W; rec.cv.height = H;
   rec.ctx = rec.cv.getContext('2d');
   var cs = rec.cv.captureStream(30);
