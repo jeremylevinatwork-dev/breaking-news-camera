@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-build="news-20261110-2105">
+<html lang="en" data-build="news-20261110-2216">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
@@ -9,7 +9,7 @@
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin:0; padding:0; height:100%; background:#0b1020; color:#fff; font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; overflow:hidden; }
   #stage { position:fixed; inset:0; background:#000; touch-action:none; }
-  #vid { position:absolute; left:50%; top:50%; width:100vw; height:100dvh; object-fit:cover; background:#111; transform:translate(-50%,-50%); }
+  #vid, #clip { position:absolute; left:50%; top:50%; width:100vw; height:100dvh; object-fit:cover; background:#111; transform:translate(-50%,-50%); }
   .hidden { display:none !important; }
 
   /* ===== Start screen ===== */
@@ -24,6 +24,8 @@
   #goLive:active { transform:scale(.97); }
   #goSelf { background:transparent; color:#dbe4ff; border:1.5px solid #33448a; border-radius:4px; padding:13px 30px; font-size:15px; font-weight:700; letter-spacing:1.5px; cursor:pointer; }
   #goSelf:active { transform:scale(.97); }
+  #goClip { background:transparent; color:#dbe4ff; border:1.5px solid #33448a; border-radius:4px; padding:13px 30px; font-size:15px; font-weight:700; letter-spacing:1.5px; cursor:pointer; }
+  #goClip:active { transform:scale(.97); }
   .selfhint { font-size:12.5px; color:#63749f; display:none; max-width:420px; }
   body.covshape .selfhint { display:block; }
   body.covshape #goLive { background:#1a2450; }
@@ -120,6 +122,7 @@
   #glowframe { position:absolute; inset:0; z-index:6; pointer-events:none; border:16px solid rgba(255,243,214,.96); box-shadow:inset 0 0 140px 40px rgba(255,238,196,.55); background:rgba(255,244,214,.10); }
   #btnRec { background:#c8102e; border-color:rgba(255,255,255,.2); font-size:12.5px; padding:7px 13px; }
   #btnRec.recording { background:#fff; color:#c8102e; animation:pulse 1.2s ease-in-out infinite; }
+  #btnMake.recording { background:#fff; color:#c8102e; animation:pulse 1.2s ease-in-out infinite; }
   #savePhoto video { max-width:92%; max-height:62%; border-radius:10px; border:2px solid #33448a; background:#000; }
   @media (max-height: 520px) {
     #headline { font-size:11px; padding:5px 9px; }
@@ -197,6 +200,7 @@
 <body>
 <div id="stage">
   <video id="vid" autoplay playsinline muted></video>
+  <video id="clip" class="hidden" playsinline loop preload="auto"></video>
   <audio id="themeAudio" src="theme.mp3?v=theme2" preload="auto" style="display:none"></audio>
 
   <!-- Live overlay -->
@@ -232,6 +236,8 @@
       <button class="cbtn" id="btnCrew">CREW</button>
       <button class="cbtn" id="btnSelf">SELF REPORT</button>
       <button class="cbtn" id="btnFb">FB LIVE</button>
+      <button class="cbtn" id="btnClip" style="font-size:12.5px;letter-spacing:1px;">ADD GRAPHICS</button>
+      <button class="cbtn hidden" id="btnMake" style="background:#c8102e;border-color:rgba(255,255,255,.2);font-size:12.5px;letter-spacing:1px;">MAKE VIDEO</button>
     </div>
     </div>
   </div>
@@ -290,6 +296,7 @@
     <p>Broadcast-quality live graphics on your phone. Tap GO LIVE for the network intro, then your camera goes live on scene with a full professional news package — lower third, ticker, timecode and recording.</p>
     <button id="goLive">● GO LIVE</button>
     <button id="goSelf">SELF REPORT</button>
+    <button id="goClip">ADD GRAPHICS</button>
     <p class="selfhint">Cover screen detected — SELF REPORT uses the front camera so you can report on camera.</p>
     <p style="font-size:12.5px;color:#63749f;">Recordings stay on your phone — nothing is uploaded anywhere.</p>
   </div>
@@ -297,6 +304,7 @@
   <div id="flash"></div>
   <div id="toast"></div>
   <div id="err" class="hidden"></div>
+  <input type="file" id="clipFile" accept="video/*" class="hidden">
 </div>
 
 <script>
@@ -609,6 +617,15 @@ function playIntro(done){
   introTimers.push(setTimeout(function(){ finishIntro(); }, INTRO_MS));
 }
 
+function speakBreaking(){
+  try {
+    if (!window.speechSynthesis) return;
+    var u = new SpeechSynthesisUtterance(L().speakTxt);
+    u.lang = L().speak; u.rate = 0.95; u.pitch = 0.9; u.volume = 1;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(u);
+  } catch(e) {}
+}
 function finishIntro(){
   introTimers.forEach(clearTimeout); introTimers = [];
   var intro = $('intro');
@@ -754,11 +771,13 @@ try { rot = parseInt(localStorage.getItem('news-rot') || '0') || 0; } catch(e) {
 var rotSeen = false;
 try { rotSeen = localStorage.getItem('news-rot') !== null; } catch(e) {}
 function applyRot(){
-  var v = $('vid');
   var swap = (rot % 180 !== 0);
-  v.style.width = swap ? '100dvh' : '100vw';
-  v.style.height = swap ? '100vw' : '100dvh';
-  v.style.transform = 'translate(-50%,-50%) rotate(' + rot + 'deg) scale(' + (digZ || 1) + ')';
+  ['vid','clip'].forEach(function(id){
+    var v = $(id); if (!v) return;
+    v.style.width = swap ? '100dvh' : '100vw';
+    v.style.height = swap ? '100vw' : '100dvh';
+    v.style.transform = 'translate(-50%,-50%) rotate(' + rot + 'deg) scale(' + (digZ || 1) + ')';
+  });
   try { localStorage.setItem('news-rot', String(rot)); } catch(e) {}
 }
 $('btnRot').onclick = function(){ rot = (rot + 90) % 360; applyRot(); if (document.body.classList.contains('tent')) tentRot(); rotSeen = true; $('btnRot').classList.remove('attn'); pokeControls(); };
@@ -871,7 +890,7 @@ $('tentswap').onclick = function(){ document.body.classList.toggle('tentflip'); 
 var lastVT = -1, stallN = 0, lastRestart = 0;
 setInterval(function(){
   try {
-    if (!liveOn || document.hidden || !stream) { stallN = 0; return; }
+    if (!liveOn || document.hidden || !stream || clipMode) { stallN = 0; return; }
     var v = $('vid'); if (!v || v.readyState < 2) return;
     if (v.currentTime === lastVT) stallN++; else { stallN = 0; lastVT = v.currentTime; }
     if (stallN >= 3 && Date.now() - lastRestart > 9000) { lastRestart = Date.now(); stallN = 0; startCamera(); toast('Camera hiccup \u2014 feed restarted'); }
@@ -1011,7 +1030,7 @@ function drawLowerThird(ctx, W, H, u){
   ctx.fillText(hl, x0 + 1.2 * u, hy + hh / 2 + 0.1 * u);
 }
 $('snap').onclick = function(){
-  var v = $('vid');
+  var v = picEl();
   if (!v.videoWidth){ showErr('Camera is still warming up — give it a second and tap again.'); return; }
   var fl = $('flash'); fl.style.transition = 'none'; fl.style.opacity = '0.9';
   setTimeout(function(){ fl.style.transition = 'opacity .45s'; fl.style.opacity = '0'; }, 40);
@@ -1172,6 +1191,160 @@ $('btnFb').onclick = function(){
   window.open('https://www.facebook.com/live/producer', '_blank');
   pokeControls();
 };
+/* ---- ADD GRAPHICS: burn the news package onto an existing video clip ----
+   The Duo Preview workaround: film in the Camera app (rear cameras plus the
+   outer-display self preview), then composite the full graphics package here. */
+var clipMode = false, clipURL = null, clipExporting = false, clipCancel = false, clipProgTimer = 0;
+var clipSrcNode = null, clipGain = null, clipAudioOk = false;
+function picEl(){ return clipMode ? $('clip') : $('vid'); }
+function routeClipAudio(){
+  if (clipSrcNode){ clipAudioOk = true; return true; }
+  try {
+    if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
+    if (AC.state === 'suspended') AC.resume();
+    if (!audioRoute()) return false;
+    clipSrcNode = AC.createMediaElementSource($('clip'));
+    clipGain = AC.createGain(); clipGain.gain.value = 1;
+    clipSrcNode.connect(AC.destination);
+    clipSrcNode.connect(clipGain); clipGain.connect(mixDest);
+    try { if (micSrc) micSrc.disconnect(); } catch(e) {}
+    clipAudioOk = true; return true;
+  } catch(e) { clipAudioOk = false; return false; }
+}
+function unrouteClipAudio(){
+  try { if (clipGain) clipGain.disconnect(); } catch(e) {}
+  if (AC) wireMic();
+}
+function enterClipMode(){
+  clipMode = true;
+  document.body.classList.add('clipmode');
+  if (!$('start').classList.contains('hidden')){
+    $('start').classList.add('hidden');
+    $('overlay').classList.remove('hidden');
+    liveOn = true; uiModeSync();
+  }
+  $('vid').classList.add('hidden');
+  $('clip').classList.remove('hidden');
+  $('btnMake').classList.remove('hidden');
+  $('btnClip').textContent = 'EXIT VIDEO';
+  pokeControls();
+  var hintSeen = false;
+  try { hintSeen = !!localStorage.getItem('news-cliphint'); } catch(e) {}
+  if (!hintSeen){
+    showToast('Tip: film yourself in the Camera app with Duo Preview on, then add the graphics here.');
+    try { localStorage.setItem('news-cliphint', '1'); } catch(e) {}
+  }
+}
+function loadClipFile(f){
+  if (clipURL){ try { URL.revokeObjectURL(clipURL); } catch(e) {} }
+  clipURL = URL.createObjectURL(f);
+  var c = $('clip');
+  c.loop = true; c.muted = false;
+  c.src = clipURL;
+  enterClipMode();
+  var p = null; try { p = c.play(); } catch(e) {}
+  if (p && p.catch) p.catch(function(){
+    c.muted = true;
+    var p2 = null; try { p2 = c.play(); } catch(e) {}
+    if (p2 && p2.catch) p2.catch(function(){});
+    showToast('Playing muted \u2014 MAKE VIDEO adds the sound.');
+  });
+}
+function exitClipMode(){
+  if (clipExporting) return;
+  clipMode = false;
+  document.body.classList.remove('clipmode');
+  var c = $('clip'); try { c.pause(); } catch(e) {}
+  c.classList.add('hidden');
+  $('vid').classList.remove('hidden');
+  $('btnMake').classList.add('hidden');
+  $('btnClip').textContent = 'ADD GRAPHICS';
+  unrouteClipAudio();
+  if (!stream) startCamera();
+  pokeControls();
+}
+$('goClip').onclick = function(){ $('clipFile').click(); };
+$('btnClip').onclick = function(){ if (clipMode) exitClipMode(); else $('clipFile').click(); pokeControls(); };
+$('clipFile').addEventListener('change', function(){
+  var f = $('clipFile').files && $('clipFile').files[0];
+  $('clipFile').value = '';
+  if (f) loadClipFile(f);
+});
+function cleanupClipExport(){
+  clipExporting = false; clipCancel = false;
+  clearInterval(clipProgTimer);
+  var c = $('clip'); c.loop = true;
+  try { c.currentTime = 0; var pp = c.play(); if (pp && pp.catch) pp.catch(function(){}); } catch(e) {}
+  var b = $('btnMake'); b.textContent = 'MAKE VIDEO'; b.classList.remove('recording');
+}
+function stopClipExport(cancelled){
+  clipCancel = !!cancelled;
+  if (rec.mr && rec.mr.state === 'recording'){ try { rec.mr.stop(); } catch(e) { cleanupClipExport(); } }
+  else cleanupClipExport();
+}
+function startClipExport(){
+  var v = $('clip');
+  if (!clipMode || !v.videoWidth){ showErr('Video is still loading \u2014 give it a second and tap again.'); return; }
+  if (rec.mr && rec.mr.state === 'recording'){ showErr('Stop the current recording first.'); return; }
+  if (!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream){
+    showErr('Video export is not supported in this browser. On an iPhone, open this page in Safari and it will work.');
+    return;
+  }
+  if (!isFinite(v.duration) || !v.duration){ showErr('Could not read that video. Try a different clip.'); return; }
+  routeClipAudio();
+  var swapWH = (rot % 180 !== 0);
+  var W = Math.min(swapWH ? v.videoHeight : v.videoWidth, 3840), H = Math.round(W * (swapWH ? v.videoWidth : v.videoHeight) / (swapWH ? v.videoHeight : v.videoWidth));
+  rec.cv = document.createElement('canvas'); rec.cv.width = W; rec.cv.height = H;
+  rec.ctx = rec.cv.getContext('2d');
+  var cs = rec.cv.captureStream(30);
+  var tracks = cs.getVideoTracks().slice();
+  if (clipAudioOk){
+    var at = null; try { at = mixDest && mixDest.stream.getAudioTracks()[0]; } catch(e) {}
+    if (at) tracks.push(at);
+  }
+  var ms = new MediaStream(tracks);
+  var mts = ['video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm'];
+  var mt = null;
+  for (var i = 0; i < mts.length; i++){ try { if (MediaRecorder.isTypeSupported(mts[i])){ mt = mts[i]; break; } } catch(e){} }
+  try { rec.mr = new MediaRecorder(ms, mt ? { mimeType: mt, videoBitsPerSecond: (W >= 3000 ? 26000000 : (W >= 1900 ? 14000000 : 8000000)) } : undefined); }
+  catch(e){ showErr('The recorder would not start in this browser.'); return; }
+  rec.chunks = [];
+  rec.mr.ondataavailable = function(e){ if (e.data && e.data.size) rec.chunks.push(e.data); };
+  rec.mr.onstop = function(){
+    var wasCancel = clipCancel;
+    cleanupClipExport();
+    if (wasCancel){ rec.chunks = []; showToast('Export cancelled'); return; }
+    finishRec();
+    showToast('Graphics added \u2014 your video is ready');
+  };
+  clipExporting = true; clipCancel = false;
+  v.loop = false;
+  v.muted = false;
+  try { v.currentTime = 0; } catch(e) {}
+  if (AC && AC.state === 'suspended'){ try { AC.resume(); } catch(e) {} }
+  var p = null; try { p = v.play(); } catch(e) {}
+  if (p && p.catch) p.catch(function(){});
+  rec.startTs = Date.now();
+  rec.mr.start(250);
+  drawRecFrame();
+  var b = $('btnMake'); b.classList.add('recording'); b.textContent = 'ADDING\u2026 0%';
+  showToast('Adding graphics\u2026');
+  clearInterval(clipProgTimer);
+  clipProgTimer = setInterval(function(){
+    if (!clipExporting) return;
+    var vv = $('clip');
+    if (vv.duration){
+      var pct = Math.min(100, Math.floor(vv.currentTime / vv.duration * 100));
+      $('btnMake').textContent = 'ADDING\u2026 ' + pct + '%';
+      if (vv.ended || vv.currentTime >= vv.duration - 0.05) stopClipExport(false);
+    }
+  }, 200);
+}
+$('btnMake').onclick = function(){
+  if (clipExporting){ stopClipExport(true); }
+  else startClipExport();
+  pokeControls();
+};
 setScene('scene');
 
 /* ---- Video recording (overlay burned in, mic audio) ---- */
@@ -1213,7 +1386,7 @@ function drawIntroCard(ctx, W, H, p){
   ctx.restore();
 }
 function drawRecFrame(){
-  var v = $('vid'); if (!v.videoWidth){ rec.raf = requestAnimationFrame(drawRecFrame); return; }
+  var v = picEl(); if (!v.videoWidth){ rec.raf = requestAnimationFrame(drawRecFrame); return; }
   var ctx = rec.ctx, W = rec.cv.width, H = rec.cv.height;
   drawVideoCover(ctx, v, W, H);
   var u = Math.max(W, H) / 100, d = L();
@@ -1254,7 +1427,7 @@ function drawRecFrame(){
   rec.raf = requestAnimationFrame(drawRecFrame);
 }
 function startRec(){
-  var v = $('vid');
+  var v = picEl();
   if (!v.videoWidth){ showErr('Camera is still warming up — give it a second and tap again.'); return; }
   if (!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream){
     showErr('Video recording is not supported in this browser. On an iPhone, open this page in Safari and it will work.');
